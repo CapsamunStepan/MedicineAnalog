@@ -34,7 +34,7 @@ class MedsSpider(scrapy.Spider):
             lei = product.css("span.product-cart__price-new--lei::text").get()
             if lei:
                 ban = product.css("span.product-cart__price-new--ban::text").get()
-                price = lei + "," + ban
+                price = lei + "." + ban
             else:
                 return
 
@@ -46,10 +46,10 @@ class MedsSpider(scrapy.Spider):
             """
 
             yield {
-                "name": product.css("h3.product-cart__title::text").get().strip(),
+                "title": product.css("h3.product-cart__title::text").get().strip(),
                 "price": price,
-                "url": "https://farmacie.md" + product.css("a.product-cart__image").attrib['href'],
-                "image": product.css("a.product-cart__image img::attr(src)").get(),
+                "link": "https://farmacie.md" + product.css("a.product-cart__image").attrib['href'],
+                "img": product.css("a.product-cart__image img::attr(src)").get(),
             }
 
         page_param = '?page='
