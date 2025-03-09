@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Медикаменты</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'meds/css/styles.css' %}">
+
+</head>
+<body>
+<div class="header">
+    <h2>Поиск аналогов лекарственных препаратов</h2>
+</div>
+<div class="centered">
+    <form method="get">
+        <label>
+            <input type="text" name="q" placeholder="Введите название лекарства">
+        </label>
+        <button type="submit">Поиск</button>
+    </form>
+</div>
+
+<ul>
+    {% for med in medicines %}
+        <li>{{ med.name }} - {{ med.price }} MDL</li>
+    {% endfor %}
+</ul>
+</body>
+</html>
