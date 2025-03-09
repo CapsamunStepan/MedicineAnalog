@@ -6,7 +6,15 @@ class AptekaMdSpider(scrapy.Spider):
 
     def start_requests(self):
         urls = [
-            'https://www.apteka.md/category/cosmetica?page=20',
+            'https://www.apteka.md/category/vitamine',
+            'https://www.apteka.md/category/plante-medicinale',
+            'https://www.apteka.md/category/produse-igienice',
+            'https://www.apteka.md/category/tehnica-medicala',
+            'https://www.apteka.md/category/mama-si-copilul',
+            'https://www.apteka.md/category/produse-ortopedice',
+            'https://www.apteka.md/category/cosmetica',
+            'https://www.apteka.md/category/medicamente',
+            'https://www.apteka.md/category/nursing-ingrijirea-bolnavilor',
         ]
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)

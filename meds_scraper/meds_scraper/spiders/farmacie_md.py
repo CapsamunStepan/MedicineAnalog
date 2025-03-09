@@ -6,9 +6,25 @@ class MedsSpider(scrapy.Spider):
 
     def start_requests(self):
         urls = [
-            # 'https://farmacie.md/ro/cosmetica'
-            'https://farmacie.md/ro/ingrijire-picioare',
-            'https://farmacie.md/ro/ingrijire-corp'
+            'https://farmacie.md/ro/cosmetica',
+            'https://farmacie.md/ro/mama-si-copilul',
+            'https://farmacie.md/ro/produse-de-igiena',
+            'https://farmacie.md/ro/medicina-naturista',
+            'https://farmacie.md/ro/scutece-si-protectoare',
+            'https://farmacie.md/ro/produse-parafarmaceutice',
+            'https://farmacie.md/ro/raceala-si-gripa',
+            'https://farmacie.md/ro/antineoplazice-si-imunomodulatoare',
+            'https://farmacie.md/ro/aparatul-respirator',
+            'https://farmacie.md/ro/digestie-si-metabolism',
+            'https://farmacie.md/ro/produse-antiparazitare',
+            'https://farmacie.md/ro/sistemul-nervos-central',
+            'https://farmacie.md/ro/sistemul-cardiovascular',
+            'https://farmacie.md/ro/preparate-dermatologice',
+            'https://farmacie.md/ro/sistemul-musculo-scheletic',
+            'https://farmacie.md/ro/antiinfectioase-de-uz-sistemic',
+            'https://farmacie.md/ro/sange-si-organe-hematopoetice',
+            'https://farmacie.md/ro/organe-senzitive-ochi-si-urechi',
+            'https://farmacie.md/ro/aparat-genito-urinar-si-hormoni-sexuali',
         ]
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)
