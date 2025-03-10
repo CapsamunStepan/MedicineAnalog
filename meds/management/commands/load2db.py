@@ -37,7 +37,7 @@ class Command(BaseCommand):
             for product in products:
                 Medicine.objects.create(
                     title=product['title'],
-                    price=float(product['price']),
+                    price=float(product['price'].replace(',', '')),
                     link=product['link'],
                     img=product['img'],
                     manufacturer=product['manufacturer'],
@@ -47,7 +47,7 @@ class Command(BaseCommand):
             for product in products:
                 Medicine.objects.create(
                     title=product['title'],
-                    price=float(product['price']),
+                    price=float(product['price'].replace(',', '')),
                     link=product['link'],
                     img=product['img'],
                     pharmacy=pharmacy,
