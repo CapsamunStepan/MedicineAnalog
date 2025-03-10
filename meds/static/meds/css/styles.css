@@ -1,109 +1,164 @@
-body {
-    font-family: Arial, sans-serif;
+/* Сброс стилей для кросс-браузерности */
+* {
     margin: 0;
     padding: 0;
-    background-color: #f8f9fa;
+    box-sizing: border-box;
 }
 
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+/* Основной фон и шрифт */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f8;
+    color: #333;
+    padding-top: 100px; /* чтобы контент не залезал под header */
 }
 
-.header {
+/* Шапка */
+header {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    background: #007bff;
-    padding: 15px 0;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(90deg, #4facfe, #00f2fe);
+    color: white;
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
 }
 
-.search-form {
+/* Логотип */
+header .logo h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0 200px 0 50px;
+}
+
+/* Форма поиска */
+header .search-form {
     display: flex;
-    justify-content: center;
+    align-items: center;
     gap: 10px;
 }
 
-.search-form input {
-    width: 300px;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-.search-form button {
+header .search-form input {
     padding: 10px 15px;
-    background: #0056b3;
-    color: #fff;
+    border-radius: 30px;
     border: none;
-    border-radius: 5px;
+    width: 500px;
+    outline: none;
+}
+
+header .search-form button {
+    padding: 10px 20px;
+    border-radius: 30px;
+    border: none;
+    background-color: white;
+    color: #00aaff;
     cursor: pointer;
-    font-size: 16px;
-}
-
-main {
-    width: 90%;
-    max-width: 1200px;
-    margin-top: 70px;
-    padding: 50px;
-}
-
-.pharmacy {
-    margin-bottom: 30px;
-}
-
-.pharmacy-name {
-    font-size: 22px;
+    transition: all 0.3s ease;
     font-weight: bold;
-    color: #333;
-    margin-bottom: 15px;
 }
 
-.medicine-list {
+header .search-form button:hover {
+    background-color: #e6f7ff;
+}
+
+/* Название аптеки */
+.pharmacy-section h2 {
+    margin: 20px 0 10px 20px;
+    font-size: 22px;
+    color: #222;
+}
+
+/* Сетка карточек */
+.medicine-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
-    list-style: none;
-    padding: 0;
+    padding: 0 20px 40px 20px;
 }
 
-.medicine-item {
-    background: #fff;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+/* Карточка лекарства */
+.medicine-card {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+    height: 100%;
 }
 
-.medicine-img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    margin-bottom: 10px;
+.medicine-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
 }
 
-.medicine-title {
-    font-weight: bold;
-    color: #007bff;
+/* Картинка лекарства */
+.medicine-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+    background-color: #f9f9f9;
+    padding: 10px;
 }
 
-.medicine-manufacturer {
+/* Информация о лекарстве */
+.medicine-info {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-grow: 1;
+}
+
+.medicine-info h3 {
+    font-size: 18px;
+    margin: 0;
+    color: #333;
+    height: 44px;
+    overflow: hidden;
+}
+
+.medicine-info p {
+    margin: 0;
     font-size: 14px;
     color: #666;
-    margin: 5px 0;
 }
 
-.medicine-price {
+.medicine-info .price {
     font-size: 16px;
     font-weight: bold;
-    color: #28a745;
+    color: #00aaff;
+    margin-top: auto;
+}
+
+/* Адаптив */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    header .search-form input {
+        width: 100%;
+    }
+
+    header .search-form {
+        width: 100%;
+    }
+
+    .pharmacy-section h2 {
+        margin-left: 10px;
+    }
+
+    .medicine-grid {
+        padding: 0 10px 30px 10px;
+    }
 }

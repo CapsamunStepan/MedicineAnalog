@@ -1,54 +1,46 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Медикаменты</title>
+    <title>Поиск лекарств</title>
     <link rel="stylesheet" href="{% static 'meds/css/styles.css' %}">
 </head>
 <body>
 
-<header class="header">
-    <div class="container">
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <h1>MedicineAnalog</h1>
+        </div>
         <form method="GET" class="search-form">
-            <input type="text" name="query" value="{{ query }}" placeholder="Поиск лекарства...">
+            <label>
+                <input type="text" name="query" value="{{ query }}" placeholder="Введите название лекарства..." required>
+            </label>
             <button type="submit">Поиск</button>
         </form>
-    </div>
-</header>
+    </header>
 
-<main>
-    {% if pharmacies %}
-        <h2>Результаты поиска:</h2>
-        <div class="pharmacies">
-            {% for pharmacy, medicines in pharmacies.items %}
-                <div class="pharmacy">
-                    <h3 class="pharmacy-name">{{ pharmacy }}</h3>
-                    <ul class="medicine-list">
-                        {% for medicine in medicines %}
-                            <li class="medicine">
-                                <div class="medicine-item">
-                                    {% if medicine.img %}
-                                        <img src="{{ medicine.img }}" alt="{{ medicine.title }}" class="medicine-img">
-                                    {% endif %}
-                                    <div class="medicine-details">
-                                        <span class="medicine-title">{{ medicine.title }}</span>
-                                        <span class="medicine-manufacturer">{{ medicine.manufacturer }}</span>
-                                        <span class="medicine-price">{{ medicine.price }} mdl</span>
-                                    </div>
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <p class="no-results">Ничего не найдено по запросу "{{ query }}"</p>
-    {% endif %}
-</main>
+    <!-- Search Results -->
+    <main>
+        {% for pharmacy, medicines in pharmacies.items %}
+        <section class="pharmacy-section">
+            <h2>{{ pharmacy }}</h2>
+            <div class="medicine-grid">
+                {% for medicine in medicines %}
+                <a href="{{ medicine.link }}" class="medicine-card" target="_blank">
+                    <img src="{{ medicine.img }}" alt="{{ medicine.title }}">
+                    <div class="medicine-info">
+                        <h3>{{ medicine.title }}</h3>
+                        <p>Производитель: {{ medicine.manufacturer }}</p>
+                        <p class="price">{{ medicine.price }} MDL</p>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </section>
+        {% endfor %}
+    </main>
 
 </body>
 </html>
