@@ -8,39 +8,39 @@
 </head>
 <body>
 
-    <!-- Header -->
-    <header>
-        <div class="logo">
-            <h1>MedicineAnalog</h1>
-        </div>
-        <form method="GET" class="search-form">
-            <label>
-                <input type="text" name="query" value="{{ query }}" placeholder="Введите название лекарства..." required>
-            </label>
-            <button type="submit">Поиск</button>
-        </form>
-    </header>
+<!-- Header -->
+<header>
+    <div class="logo">
+        <a href="/" class="logo-link">MedicineAnalog</a>
+    </div>
+    <form method="GET" class="search-form">
+        <label>
+            <input type="text" name="query" value="{{ query }}" placeholder="Введите название лекарства..." required>
+        </label>
+        <button type="submit">Поиск</button>
+    </form>
+</header>
 
-    <!-- Search Results -->
-    <main>
-        {% for pharmacy, medicines in pharmacies.items %}
+<!-- Search Results -->
+<main>
+    {% for pharmacy, medicines in pharmacies.items %}
         <section class="pharmacy-section">
             <h2>{{ pharmacy }}</h2>
             <div class="medicine-grid">
                 {% for medicine in medicines %}
-                <a href="{{ medicine.link }}" class="medicine-card" target="_blank">
-                    <img src="{{ medicine.img }}" alt="{{ medicine.title }}">
-                    <div class="medicine-info">
-                        <h3>{{ medicine.title }}</h3>
-                        <p>Производитель: {{ medicine.manufacturer }}</p>
-                        <p class="price">{{ medicine.price }} MDL</p>
-                    </div>
-                </a>
+                    <a href="{{ medicine.link }}" class="medicine-card" target="_blank">
+                        <img src="{{ medicine.img }}" alt="{{ medicine.title }}">
+                        <div class="medicine-info">
+                            <h3>{{ medicine.title }}</h3>
+                            <p>Производитель: {{ medicine.manufacturer }}</p>
+                            <p class="price">{{ medicine.price }} MDL</p>
+                        </div>
+                    </a>
                 {% endfor %}
             </div>
         </section>
-        {% endfor %}
-    </main>
+    {% endfor %}
+</main>
 
 </body>
 </html>

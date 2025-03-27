@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404
 from .models import Medicine
 
 
@@ -22,3 +23,6 @@ def home(request):
     return render(request, 'meds/home.html', {'pharmacies': pharmacies, 'query': query})
 
 
+def view_description(request, medicine_id):
+    medicine = get_object_or_404(Medicine, id=medicine_id)
+    return HttpResponse(medicine)

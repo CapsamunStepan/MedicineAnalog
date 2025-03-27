@@ -29,10 +29,17 @@ header {
 }
 
 /* Логотип */
-header .logo h1 {
+.logo a {
+    text-decoration: none;
+    color: white;
     font-size: 24px;
     font-weight: bold;
     margin: 0 200px 0 50px;
+
+}
+
+.logo a:hover {
+    opacity: 0.8; /* Легкий эффект при наведении */
 }
 
 /* Форма поиска */
