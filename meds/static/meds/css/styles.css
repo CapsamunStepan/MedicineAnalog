@@ -72,6 +72,128 @@ header .search-form button:hover {
     background-color: #e6f7ff;
 }
 
+.mode-select select {
+    padding: 10px 12px;
+    border-radius: 30px;
+    border: none;
+    outline: none;
+}
+
+.analog-chips {
+    display: flex;
+    gap: 10px;
+    padding: 0 20px 20px 20px;
+    flex-wrap: wrap;
+}
+
+.chip {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: white;
+    text-decoration: none;
+    color: #0077aa;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.chip:hover {
+    background: #e6f7ff;
+}
+
+.detail-container {
+    padding: 0 20px 40px 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.detail-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.detail-media img {
+    width: 100%;
+    max-width: 320px;
+    height: 240px;
+    object-fit: contain;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    padding: 10px;
+}
+
+.detail-card .detail-title {
+    font-size: 26px;
+    margin-bottom: 10px;
+}
+
+.detail-price {
+    font-size: 22px;
+    font-weight: bold;
+    color: #00aaff;
+    margin: 14px 0;
+}
+
+.detail-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: #00aaff;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.btn.secondary {
+    background: white;
+    color: #0077aa;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.detail-subtitle {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.price-compare {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.price-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: #f7fbff;
+}
+
+.price-row a {
+    color: #0077aa;
+    text-decoration: none;
+}
+
+.price-row a:hover {
+    text-decoration: underline;
+}
+
 /* Название аптеки */
 .pharmacy-section h2 {
     margin: 20px 0 10px 20px;
@@ -159,6 +281,10 @@ header .search-form button:hover {
 
     header .search-form {
         width: 100%;
+    }
+
+    .detail-media img {
+        max-width: 100%;
     }
 
     .pharmacy-section h2 {

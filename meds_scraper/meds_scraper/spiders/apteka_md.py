@@ -20,20 +20,19 @@ class AptekaMdSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
-        product_table = response.css("div[class*='mt-2 mb-10 grid grid-cols-2 md:grid-cols-2 "
-                                     "lg:grid-cols-4 xl:grid-cols-6 gap-x-6 gap-y-10']")
+        product_table = response.css("div[class*='mt-6 mb-10 grid gap-x-6 gap-y-10 grid-cols-1 "
+                                     "lg:grid-cols-2 xl:grid-cols-4']")
         for product in product_table.css("a"):
-            title = product.css("div.ProductItem_product__item__title__LiZJy.line-clamp-3.mb-1::text").get()
-
+            title = product.xpath(
+                ".//div[contains(@class, 'line-clamp-3') and contains(@class, 'font-semibold')]/text()").get()
             try:
-                price = product.css("div.ProductItem_product__item__price__VFxS7.mb-2::text").get().replace(" Lei", "")
+                price = product.xpath(".//div[contains(@class, 'text-xl') and contains(@class, 'font-semibold')]/text()").get().replace("Lei", "").strip()
             except:
-                return
+                price = None
 
             link = "https://www.apteka.md/" + product.css("a").attrib["href"]
-            img = product.css("div.h-44.object-contain img::attr(src)").get()
-            manufacturer = product.css("div[class*='ProductItem_product__item__manufacturer__NEnGZ h-[1,125rem] "
-                                       "line-clamp-1']::text").get()
+            img = product.css("img::attr(src)").get()
+            manufacturer = product.xpath(".//div[contains(@class, 'text-xs') and contains(@class, 'font-normal')]/text()").get()
 
             yield {
                 "title": title,

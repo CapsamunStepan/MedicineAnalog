@@ -17,22 +17,44 @@
         <label>
             <input type="text" name="query" value="{{ query }}" placeholder="Введите название лекарства..." required>
         </label>
+        <label class="mode-select">
+            <select name="mode">
+                <option value="title" {% if mode != 'ingredient' %}selected{% endif %}>по названию</option>
+                <option value="ingredient" {% if mode == 'ingredient' %}selected{% endif %}>по веществу</option>
+            </select>
+        </label>
         <button type="submit">Поиск</button>
     </form>
 </header>
 
 <!-- Search Results -->
 <main>
+    {% if analogs %}
+        <section class="pharmacy-section">
+            <h2>Аналоги (по действующему веществу)</h2>
+            <div class="analog-chips">
+                {% for a in analogs %}
+                    <a class="chip" href="{% url 'analogs' %}?ingredient={{ a.active_ingredient|urlencode }}">
+                        {{ a.active_ingredient }} · от {{ a.min_price }} MDL
+                    </a>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+
     {% for pharmacy, medicines in pharmacies.items %}
         <section class="pharmacy-section">
             <h2>{{ pharmacy }}</h2>
             <div class="medicine-grid">
                 {% for medicine in medicines %}
-                    <a href="{{ medicine.link }}" class="medicine-card" target="_blank">
+                    <a href="{% url 'medicine_detail' medicine.id %}" class="medicine-card">
                         <img src="{{ medicine.img }}" alt="{{ medicine.title }}">
                         <div class="medicine-info">
                             <h3>{{ medicine.title }}</h3>
                             <p>Производитель: {{ medicine.manufacturer }}</p>
+                            {% if medicine.active_ingredient %}
+                                <p>Вещество: {{ medicine.active_ingredient }}</p>
+                            {% endif %}
                             <p class="price">{{ medicine.price }} MDL</p>
                         </div>
                     </a>

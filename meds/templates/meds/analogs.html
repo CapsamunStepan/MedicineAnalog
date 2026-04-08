@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Аналоги — MedicineAnalog</title>
+    <link rel="stylesheet" href="{% static 'meds/css/styles.css' %}">
+</head>
+<body>
+<header>
+    <div class="logo">
+        <a href="/" class="logo-link">MedicineAnalog</a>
+    </div>
+    <form method="GET" action="/" class="search-form">
+        <label>
+            <input type="text" name="query" placeholder="Введите название лекарства..." required>
+        </label>
+        <label class="mode-select">
+            <select name="mode">
+                <option value="title" selected>по названию</option>
+                <option value="ingredient">по веществу</option>
+            </select>
+        </label>
+        <button type="submit">Поиск</button>
+    </form>
+</header>
+
+<main class="detail-container">
+    <section class="detail-card">
+        <h1 class="detail-title">Аналоги</h1>
+        {% if ingredient %}
+            <p><strong>Действующее вещество:</strong> {{ ingredient }}</p>
+        {% endif %}
+
+        {% if results %}
+            <div class="medicine-grid">
+                {% for r in results %}
+                    <div class="medicine-card">
+                        <img src="{{ r.img }}" alt="{{ r.title }}">
+                        <div class="medicine-info">
+                            <h3>{{ r.title }}</h3>
+                            <p>Производитель: {{ r.manufacturer }}</p>
+                            <p class="price">от {{ r.min_price }} MDL</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Ничего не найдено. Откройте препарат и перейдите по действующему веществу, либо выполните поиск «по веществу».</p>
+        {% endif %}
+    </section>
+</main>
+</body>
+</html>
+
