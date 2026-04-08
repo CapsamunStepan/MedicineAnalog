@@ -1,9 +1,9 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <title>Поиск лекарств</title>
+    <title>Căutare medicamente</title>
     <link rel="stylesheet" href="{% static 'meds/css/styles.css' %}">
 </head>
 <body>
@@ -15,27 +15,117 @@
     </div>
     <form method="GET" class="search-form">
         <label>
-            <input type="text" name="query" value="{{ query }}" placeholder="Введите название лекарства..." required>
+            <input type="text" name="query" value="{{ query }}" placeholder="Introdu numele medicamentului..." required>
         </label>
         <label class="mode-select">
             <select name="mode">
-                <option value="title" {% if mode != 'ingredient' %}selected{% endif %}>по названию</option>
-                <option value="ingredient" {% if mode == 'ingredient' %}selected{% endif %}>по веществу</option>
+                <option value="title" {% if mode != 'ingredient' %}selected{% endif %}>după denumire</option>
+                <option value="ingredient" {% if mode == 'ingredient' %}selected{% endif %}>după substanță</option>
             </select>
         </label>
-        <button type="submit">Поиск</button>
+        <button type="submit">Caută</button>
     </form>
 </header>
 
 <!-- Search Results -->
 <main>
+    {% if not query %}
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Căutare medicamente și analogi</h1>
+                <p class="hero-subtitle">
+                    Compară prețurile între farmacii și găsește analogi după substanța activă.
+                </p>
+
+                {% if landing.total_medicines %}
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <div class="stat-value">{{ landing.total_medicines }}</div>
+                            <div class="stat-label">produse în bază</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">{{ landing.total_pharmacies }}</div>
+                            <div class="stat-label">farmacii</div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="hero-tips">
+                    <div class="tip">Încearcă: <a href="/?query=panadol&mode=title">„panadol”</a></div>
+                    <div class="tip">Sau după substanță: <a href="/?query=paracetamol&mode=ingredient">„paracetamol”</a></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="how">
+            <div class="how-inner">
+                <h2>Cum funcționează</h2>
+                <div class="how-grid">
+                    <div class="how-card">
+                        <div class="how-title">1) Caută</div>
+                        <div class="how-text">Introdu denumirea sau substanța activă.</div>
+                    </div>
+                    <div class="how-card">
+                        <div class="how-title">2) Compară</div>
+                        <div class="how-text">Vezi rezultatele pe farmacii și prețurile.</div>
+                    </div>
+                    <div class="how-card">
+                        <div class="how-title">3) Alege analogi</div>
+                        <div class="how-text">Deschide produsul și navighează după substanță.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="landing-inner">
+            {% if landing.popular_ingredients %}
+                <section class="pharmacy-section landing-section">
+                    <h2>Substanțe populare</h2>
+                    <div class="analog-chips">
+                        {% for p in landing.popular_ingredients %}
+                            <a class="chip" href="/?query={{ p.active_ingredient|urlencode }}&mode=ingredient">
+                                {{ p.active_ingredient }} · {{ p.cnt }} · de la {{ p.min_price }} MDL
+                            </a>
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+
+            {% if landing.recent_searches %}
+                <section class="pharmacy-section landing-section">
+                    <h2>Căutări recente</h2>
+                    <div class="analog-chips">
+                        {% for s in landing.recent_searches %}
+                            <a class="chip" href="/?query={{ s.query|urlencode }}&mode={{ s.mode }}">
+                                {{ s.query }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+
+            {% if landing.top_searches %}
+                <section class="pharmacy-section landing-section">
+                    <h2>Top căutări</h2>
+                    <div class="analog-chips">
+                        {% for t in landing.top_searches %}
+                            <a class="chip" href="/?query={{ t.query_norm|urlencode }}&mode={{ t.mode }}">
+                                {{ t.query_norm }} · {{ t.cnt }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+        </div>
+    {% endif %}
+
     {% if analogs %}
         <section class="pharmacy-section">
-            <h2>Аналоги (по действующему веществу)</h2>
+            <h2>Analogi (după substanța activă)</h2>
             <div class="analog-chips">
                 {% for a in analogs %}
                     <a class="chip" href="{% url 'analogs' %}?ingredient={{ a.active_ingredient|urlencode }}">
-                        {{ a.active_ingredient }} · от {{ a.min_price }} MDL
+                        {{ a.active_ingredient }} · de la {{ a.min_price }} MDL
                     </a>
                 {% endfor %}
             </div>
@@ -51,9 +141,9 @@
                         <img src="{{ medicine.img }}" alt="{{ medicine.title }}">
                         <div class="medicine-info">
                             <h3>{{ medicine.title }}</h3>
-                            <p>Производитель: {{ medicine.manufacturer }}</p>
+                            <p>Producător: {{ medicine.manufacturer }}</p>
                             {% if medicine.active_ingredient %}
-                                <p>Вещество: {{ medicine.active_ingredient }}</p>
+                                <p>Substanță: {{ medicine.active_ingredient }}</p>
                             {% endif %}
                             <p class="price">{{ medicine.price }} MDL</p>
                         </div>
@@ -64,5 +154,6 @@
     {% endfor %}
 </main>
 
+<script src="{% static 'meds/js/search_suggest.js' %}"></script>
 </body>
 </html>

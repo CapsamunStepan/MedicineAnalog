@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ro">
 <head>
     <meta charset="UTF-8">
     <title>{{ medicine.title }} — MedicineAnalog</title>
@@ -13,15 +13,15 @@
     </div>
     <form method="GET" action="/" class="search-form">
         <label>
-            <input type="text" name="query" placeholder="Введите название лекарства..." required>
+            <input type="text" name="query" placeholder="Introdu numele medicamentului..." required>
         </label>
         <label class="mode-select">
             <select name="mode">
-                <option value="title" selected>по названию</option>
-                <option value="ingredient">по веществу</option>
+                <option value="title" selected>după denumire</option>
+                <option value="ingredient">după substanță</option>
             </select>
         </label>
-        <button type="submit">Поиск</button>
+        <button type="submit">Caută</button>
     </form>
 </header>
 
@@ -32,10 +32,10 @@
         </div>
         <div class="detail-info">
             <h1 class="detail-title">{{ medicine.title }}</h1>
-            <p><strong>Аптека:</strong> {{ medicine.pharmacy }}</p>
-            <p><strong>Производитель:</strong> {{ medicine.manufacturer }}</p>
+            <p><strong>Farmacie:</strong> {{ medicine.pharmacy }}</p>
+            <p><strong>Producător:</strong> {{ medicine.manufacturer }}</p>
             {% if medicine.active_ingredient %}
-                <p><strong>Действующее вещество:</strong>
+                <p><strong>Substanță activă:</strong>
                     <a href="{% url 'analogs' %}?ingredient={{ medicine.active_ingredient|urlencode }}">
                         {{ medicine.active_ingredient }}
                     </a>
@@ -45,10 +45,10 @@
 
             <div class="detail-actions">
                 <a class="btn" href="{{ medicine.link }}" target="_blank" rel="noopener noreferrer">
-                    Открыть в аптеке
+                    Deschide în farmacie
                 </a>
                 <a class="btn secondary" href="/">
-                    Назад к поиску
+                    Înapoi la căutare
                 </a>
             </div>
         </div>
@@ -56,14 +56,14 @@
 
     {% if price_compare %}
         <section class="detail-card">
-            <h2 class="detail-subtitle">Сравнение цен по веществу</h2>
+            <h2 class="detail-subtitle">Comparare prețuri (după substanță)</h2>
             <div class="price-compare">
                 {% for row in price_compare %}
                     <div class="price-row">
                         <div class="price-pharmacy">{{ row.pharmacy }}</div>
                         <div class="price-value">{{ row.min_price }} MDL</div>
                         <div class="price-link">
-                            <a href="{{ row.link }}" target="_blank" rel="noopener noreferrer">ссылка</a>
+                            <a href="{{ row.link }}" target="_blank" rel="noopener noreferrer">link</a>
                         </div>
                     </div>
                 {% endfor %}
@@ -71,6 +71,8 @@
         </section>
     {% endif %}
 </main>
+
+<script src="{% static 'meds/js/search_suggest.js' %}"></script>
 </body>
 </html>
 

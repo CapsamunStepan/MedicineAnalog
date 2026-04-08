@@ -52,3 +52,8 @@ $env:OPENAI_API_KEY="..."
 python manage.py fill_active_ingredients --overwrite --limit 50
 ```
 
+cd .\meds_scraper\
+scrapy crawl apteka_md -O apteka_md.json
+scrapy crawl farmacie_md -O farmacie_md.json
+scrapy crawl farmacia_familiei -O farmacia_familiei.json
+scrapy crawl hippocrates -O hippocrates.json

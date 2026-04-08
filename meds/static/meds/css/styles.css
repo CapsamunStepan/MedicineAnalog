@@ -13,6 +13,84 @@ body {
     padding-top: 100px; /* чтобы контент не залезал под header */
 }
 
+.hero {
+    padding: 10px 20px 0 20px;
+}
+
+.hero-content {
+    max-width: 1320px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, rgba(79, 172, 254, 0.18), rgba(0, 242, 254, 0.12));
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 18px;
+    padding: 26px 24px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+.hero-content h1 {
+    font-size: 34px;
+    margin-bottom: 8px;
+    color: #1d2a33;
+}
+
+.hero-subtitle {
+    font-size: 16px;
+    color: #2f3f4a;
+    max-width: 720px;
+}
+
+.hero-stats {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+.stat {
+    background: white;
+    border-radius: 14px;
+    padding: 12px 14px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    min-width: 160px;
+}
+
+.stat-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0077aa;
+    line-height: 1.1;
+}
+
+.stat-label {
+    font-size: 13px;
+    color: #56636c;
+}
+
+.hero-tips {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+}
+
+.tip {
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 999px;
+    padding: 10px 14px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    font-size: 14px;
+}
+
+.tip a {
+    color: #0077aa;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.tip a:hover {
+    text-decoration: underline;
+}
+
 /* Шапка */
 header {
     position: fixed;
@@ -47,6 +125,7 @@ header .search-form {
     display: flex;
     align-items: center;
     gap: 10px;
+    position: relative;
 }
 
 header .search-form input {
@@ -70,6 +149,110 @@ header .search-form button {
 
 header .search-form button:hover {
     background-color: #e6f7ff;
+}
+
+.suggestions {
+    position: absolute;
+    top: 52px;
+    left: 0;
+    width: 100%;
+    background: white;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.14);
+    overflow: hidden;
+    z-index: 2000;
+}
+
+.suggestions.hidden {
+    display: none;
+}
+
+.suggestion {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: white;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+}
+
+.suggestion:hover {
+    background: #f3fbff;
+}
+
+.suggestion-text {
+    font-size: 14px;
+    color: #1d2a33;
+    font-weight: 600;
+}
+
+.suggestion-meta {
+    font-size: 12px;
+    color: #6b7a84;
+    white-space: nowrap;
+}
+
+.how {
+    padding: 14px 20px 0 20px;
+}
+
+.how-inner {
+    max-width: 1320px;
+    margin: 0 auto;
+}
+
+.landing-inner {
+    max-width: 1320px;
+    margin: 0 auto;
+}
+
+.landing-section {
+    margin-top: 14px;
+}
+
+.landing-section h2 {
+    margin: 18px 0 10px 6px;
+}
+
+.landing-section .analog-chips {
+    padding: 0 6px 20px 6px;
+}
+
+.how-inner h2 {
+    margin: 18px 0 10px 6px;
+    font-size: 18px;
+    color: #222;
+}
+
+.how-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+.how-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    padding: 16px;
+}
+
+.how-title {
+    font-weight: 800;
+    color: #0077aa;
+    margin-bottom: 6px;
+}
+
+.how-text {
+    color: #40525d;
+    font-size: 14px;
+    line-height: 1.35;
 }
 
 .mode-select select {
@@ -281,6 +464,18 @@ header .search-form button:hover {
 
     header .search-form {
         width: 100%;
+    }
+
+    .hero-content h1 {
+        font-size: 28px;
+    }
+
+    .suggestions {
+        top: 104px;
+    }
+
+    .how-grid {
+        grid-template-columns: 1fr;
     }
 
     .detail-media img {

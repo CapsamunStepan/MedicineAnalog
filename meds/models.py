@@ -12,3 +12,27 @@ class Medicine(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class SearchQuery(models.Model):
+    MODE_TITLE = "title"
+    MODE_INGREDIENT = "ingredient"
+    MODE_CHOICES = [
+        (MODE_TITLE, "title"),
+        (MODE_INGREDIENT, "ingredient"),
+    ]
+
+    query = models.CharField(max_length=255)
+    query_norm = models.CharField(max_length=255, db_index=True)
+    mode = models.CharField(max_length=32, choices=MODE_CHOICES, default=MODE_TITLE, db_index=True)
+    session_key = models.CharField(max_length=64, blank=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["mode", "query_norm", "-created_at"]),
+            models.Index(fields=["session_key", "-created_at"]),
+        ]
+
+    def __str__(self):
+        return f"{self.query} ({self.mode})"
