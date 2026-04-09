@@ -4,9 +4,19 @@
 
 ## Быстрый старт
 
+### С uv (рекомендуется)
+
+```bash
+uv sync
+uv run manage.py migrate
+uv run manage.py runserver
+```
+
+### С pip
+
 ```bash
 python -m venv .venv
-.venv\\Scripts\\activate
+.venv\Scripts\activate
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver

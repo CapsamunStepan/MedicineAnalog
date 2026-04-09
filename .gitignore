@@ -9,6 +9,7 @@ db.sqlite3
 .venv/
 venv/
 ENV/
+.python-version
 
 .idea/
 
