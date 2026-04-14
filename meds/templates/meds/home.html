@@ -132,28 +132,57 @@
         </section>
     {% endif %}
 
-    {% for pharmacy, medicines in pharmacies.items %}
-        <section class="pharmacy-section">
-            <h2>{{ pharmacy }}</h2>
-            <div class="medicine-grid">
-                {% for medicine in medicines %}
-                    <a href="{% url 'medicine_detail' medicine.id %}" class="medicine-card">
-                        <img src="{{ medicine.img }}" alt="{{ medicine.title }}">
-                        <div class="medicine-info">
-                            <h3>{{ medicine.title }}</h3>
-                            <p>Producător: {{ medicine.manufacturer }}</p>
-                            {% if medicine.active_ingredient %}
-                                <p>Substanță: {{ medicine.active_ingredient }}</p>
-                            {% endif %}
-                            <p class="price">{{ medicine.price }} MDL</p>
-                        </div>
-                    </a>
-                {% endfor %}
-            </div>
-        </section>
-    {% endfor %}
+    {% if pharmacies %}
+        <div class="pharmacy-tabs">
+            {% for pharmacy, medicines in pharmacies.items %}
+                <button class="pharmacy-tab{% if forloop.first %} active{% endif %}"
+                        data-pharmacy="{{ forloop.counter }}">
+                    {{ pharmacy }}
+                    <span class="tab-count">{{ medicines|length }}</span>
+                </button>
+            {% endfor %}
+        </div>
+
+        {% for pharmacy, medicines in pharmacies.items %}
+            <section class="pharmacy-panel{% if forloop.first %} active{% endif %}"
+                     data-pharmacy="{{ forloop.counter }}">
+                <div class="medicine-grid">
+                    {% for medicine in medicines %}
+                        <a href="{% url 'medicine_detail' medicine.id %}" class="medicine-card">
+                            <img src="{{ medicine.img }}" alt="{{ medicine.title }}">
+                            <div class="medicine-info">
+                                <h3>{{ medicine.title }}</h3>
+                                <p>Producător: {{ medicine.manufacturer }}</p>
+                                {% if medicine.active_ingredient %}
+                                    <p>Substanță: {{ medicine.active_ingredient }}</p>
+                                {% endif %}
+                                <p class="price">{{ medicine.price }} MDL</p>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endfor %}
+    {% endif %}
 </main>
 
 <script src="{% static 'meds/js/search_suggest.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const tabs = document.querySelectorAll('.pharmacy-tab');
+    const panels = document.querySelectorAll('.pharmacy-panel');
+    if (!tabs.length) return;
+
+    tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            const id = this.dataset.pharmacy;
+            tabs.forEach(function (t) { t.classList.remove('active'); });
+            panels.forEach(function (p) { p.classList.remove('active'); });
+            this.classList.add('active');
+            document.querySelector('.pharmacy-panel[data-pharmacy="' + id + '"]').classList.add('active');
+        });
+    });
+});
+</script>
 </body>
 </html>

@@ -377,6 +377,62 @@ header .search-form button:hover {
     text-decoration: underline;
 }
 
+/* Табы аптек */
+.pharmacy-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 16px 20px 0 20px;
+    flex-wrap: wrap;
+}
+
+.pharmacy-tab {
+    padding: 10px 20px;
+    border: 2px solid #00aaff;
+    border-radius: 999px;
+    background: white;
+    color: #0077aa;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pharmacy-tab:hover {
+    background: #e6f7ff;
+}
+
+.pharmacy-tab.active {
+    background: linear-gradient(90deg, #4facfe, #00f2fe);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(0, 170, 255, 0.3);
+}
+
+.pharmacy-tab .tab-count {
+    background: rgba(0, 0, 0, 0.08);
+    border-radius: 999px;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 700;
+    min-width: 24px;
+    text-align: center;
+}
+
+.pharmacy-tab.active .tab-count {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.pharmacy-panel {
+    display: none;
+}
+
+.pharmacy-panel.active {
+    display: block;
+}
+
 /* Название аптеки */
 .pharmacy-section h2 {
     margin: 20px 0 10px 20px;
@@ -480,6 +536,15 @@ header .search-form button:hover {
 
     .detail-media img {
         max-width: 100%;
+    }
+
+    .pharmacy-tabs {
+        padding: 12px 10px 0 10px;
+    }
+
+    .pharmacy-tab {
+        padding: 8px 14px;
+        font-size: 13px;
     }
 
     .pharmacy-section h2 {
