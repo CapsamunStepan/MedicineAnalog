@@ -1,4 +1,4 @@
-from django.db.models import Count, Min
+from django.db.models import Count, Min, Q
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from .models import Medicine, SearchQuery
@@ -25,10 +25,9 @@ def home(request):
                 session_key=request.session.session_key or "",
             )
 
-        if mode == 'ingredient':
-            medicines = Medicine.objects.filter(active_ingredient__icontains=query)
-        else:
-            medicines = Medicine.objects.filter(title__icontains=query)
+        medicines = Medicine.objects.filter(
+            Q(title__icontains=query) | Q(active_ingredient__icontains=query)
+        )
 
         # Группируем по аптеке
         for medicine in medicines:
@@ -84,7 +83,10 @@ def home(request):
             "top_searches": top_searches,
         }
 
-    total_count = sum(len(v) for v in pharmacies.values())
+    all_medicines = sorted(
+        [m for meds in pharmacies.values() for m in meds],
+        key=lambda x: x.price,
+    )
 
     return render(
         request,
@@ -95,7 +97,8 @@ def home(request):
             'mode': mode,
             'analogs': analogs,
             'landing': landing,
-            'total_count': total_count,
+            'total_count': len(all_medicines),
+            'all_medicines': all_medicines,
         },
     )
 

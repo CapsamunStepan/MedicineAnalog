@@ -17,12 +17,6 @@
         <label>
             <input type="text" name="query" value="{{ query }}" placeholder="Introdu numele medicamentului..." required>
         </label>
-        <label class="mode-select">
-            <select name="mode">
-                <option value="title" {% if mode != 'ingredient' %}selected{% endif %}>după denumire</option>
-                <option value="ingredient" {% if mode == 'ingredient' %}selected{% endif %}>după substanță</option>
-            </select>
-        </label>
         <button type="submit">Caută</button>
     </form>
 </header>
@@ -149,23 +143,21 @@
 
         <section class="pharmacy-panel active" data-pharmacy="all">
             <div class="medicine-grid">
-                {% for pharmacy, medicines in pharmacies.items %}
-                    {% for medicine in medicines %}
-                        <a href="{% url 'medicine_detail' medicine.id %}" class="medicine-card">
-                            <img src="{{ medicine.img }}" alt="{{ medicine.title }}">
-                            <div class="medicine-info">
-                                <h3>{{ medicine.title }}</h3>
-                                <p>Producător: {{ medicine.manufacturer }}</p>
-                                {% if medicine.active_ingredient %}
-                                    <p>Substanță: {{ medicine.active_ingredient }}</p>
-                                {% endif %}
-                                <div class="price-row-card">
-                                    <p class="price">{{ medicine.price }} MDL</p>
-                                    <p class="price pharmacy-label">{{ medicine.pharmacy }}</p>
-                                </div>
+                {% for medicine in all_medicines %}
+                    <a href="{% url 'medicine_detail' medicine.id %}" class="medicine-card">
+                        <img src="{{ medicine.img }}" alt="{{ medicine.title }}">
+                        <div class="medicine-info">
+                            <h3>{{ medicine.title }}</h3>
+                            <p>Producător: {{ medicine.manufacturer }}</p>
+                            {% if medicine.active_ingredient %}
+                                <p>Substanță: {{ medicine.active_ingredient }}</p>
+                            {% endif %}
+                            <div class="price-row-card">
+                                <p class="price">{{ medicine.price }} MDL</p>
+                                <p class="price pharmacy-label">{{ medicine.pharmacy }}</p>
                             </div>
-                        </a>
-                    {% endfor %}
+                        </div>
+                    </a>
                 {% endfor %}
             </div>
         </section>
