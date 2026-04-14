@@ -433,6 +433,10 @@ header .search-form button:hover {
     display: block;
 }
 
+.pharmacy-panel .medicine-grid {
+    padding-top: 20px;
+}
+
 /* Название аптеки */
 .pharmacy-section h2 {
     margin: 20px 0 10px 20px;
@@ -443,9 +447,10 @@ header .search-form button:hover {
 /* Сетка карточек */
 .medicine-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(235px, 1fr));
     gap: 20px;
     padding: 0 20px 40px 20px;
+    max-width: 1480px;
 }
 
 /* Карточка лекарства */
@@ -499,11 +504,23 @@ header .search-form button:hover {
     color: #666;
 }
 
+.price-row-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: auto;
+}
+
 .medicine-info .price {
     font-size: 16px;
     font-weight: bold;
     color: #00aaff;
-    margin-top: auto;
+}
+
+.medicine-info .pharmacy-label {
+    font-size: 13px;
+    font-weight: 600;
+    text-align: right;
 }
 
 /* Адаптив */

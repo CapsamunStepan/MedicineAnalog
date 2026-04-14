@@ -84,6 +84,8 @@ def home(request):
             "top_searches": top_searches,
         }
 
+    total_count = sum(len(v) for v in pharmacies.values())
+
     return render(
         request,
         'meds/home.html',
@@ -93,6 +95,7 @@ def home(request):
             'mode': mode,
             'analogs': analogs,
             'landing': landing,
+            'total_count': total_count,
         },
     )
 

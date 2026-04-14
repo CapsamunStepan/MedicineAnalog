@@ -134,8 +134,12 @@
 
     {% if pharmacies %}
         <div class="pharmacy-tabs">
+            <button class="pharmacy-tab active" data-pharmacy="all">
+                Toți
+                <span class="tab-count">{{ total_count }}</span>
+            </button>
             {% for pharmacy, medicines in pharmacies.items %}
-                <button class="pharmacy-tab{% if forloop.first %} active{% endif %}"
+                <button class="pharmacy-tab"
                         data-pharmacy="{{ forloop.counter }}">
                     {{ pharmacy }}
                     <span class="tab-count">{{ medicines|length }}</span>
@@ -143,8 +147,31 @@
             {% endfor %}
         </div>
 
+        <section class="pharmacy-panel active" data-pharmacy="all">
+            <div class="medicine-grid">
+                {% for pharmacy, medicines in pharmacies.items %}
+                    {% for medicine in medicines %}
+                        <a href="{% url 'medicine_detail' medicine.id %}" class="medicine-card">
+                            <img src="{{ medicine.img }}" alt="{{ medicine.title }}">
+                            <div class="medicine-info">
+                                <h3>{{ medicine.title }}</h3>
+                                <p>Producător: {{ medicine.manufacturer }}</p>
+                                {% if medicine.active_ingredient %}
+                                    <p>Substanță: {{ medicine.active_ingredient }}</p>
+                                {% endif %}
+                                <div class="price-row-card">
+                                    <p class="price">{{ medicine.price }} MDL</p>
+                                    <p class="price pharmacy-label">{{ medicine.pharmacy }}</p>
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </section>
+
         {% for pharmacy, medicines in pharmacies.items %}
-            <section class="pharmacy-panel{% if forloop.first %} active{% endif %}"
+            <section class="pharmacy-panel"
                      data-pharmacy="{{ forloop.counter }}">
                 <div class="medicine-grid">
                     {% for medicine in medicines %}
@@ -156,7 +183,10 @@
                                 {% if medicine.active_ingredient %}
                                     <p>Substanță: {{ medicine.active_ingredient }}</p>
                                 {% endif %}
-                                <p class="price">{{ medicine.price }} MDL</p>
+                                <div class="price-row-card">
+                                    <p class="price">{{ medicine.price }} MDL</p>
+                                    <p class="price pharmacy-label">{{ medicine.pharmacy }}</p>
+                                </div>
                             </div>
                         </a>
                     {% endfor %}
@@ -169,17 +199,18 @@
 <script src="{% static 'meds/js/search_suggest.js' %}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const tabs = document.querySelectorAll('.pharmacy-tab');
-    const panels = document.querySelectorAll('.pharmacy-panel');
+    var tabs = document.querySelectorAll('.pharmacy-tab');
+    var panels = document.querySelectorAll('.pharmacy-panel');
     if (!tabs.length) return;
 
     tabs.forEach(function (tab) {
         tab.addEventListener('click', function () {
-            const id = this.dataset.pharmacy;
+            var id = this.getAttribute('data-pharmacy');
             tabs.forEach(function (t) { t.classList.remove('active'); });
             panels.forEach(function (p) { p.classList.remove('active'); });
             this.classList.add('active');
-            document.querySelector('.pharmacy-panel[data-pharmacy="' + id + '"]').classList.add('active');
+            var target = document.querySelector('.pharmacy-panel[data-pharmacy="' + id + '"]');
+            if (target) target.classList.add('active');
         });
     });
 });
