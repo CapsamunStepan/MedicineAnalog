@@ -3,8 +3,10 @@
   if (!form) return;
 
   const input = form.querySelector("input[name='query']");
+  if (!input) return;
+
   const modeSelect = form.querySelector("select[name='mode']");
-  if (!input || !modeSelect) return;
+  const getMode = () => (modeSelect ? modeSelect.value : "title");
 
   let box = document.getElementById("suggestions");
   if (!box) {
@@ -31,29 +33,6 @@
     box.classList.remove("hidden");
   };
 
-  const render = (items) => {
-    if (!items || items.length === 0) {
-      close();
-      return;
-    }
-
-    box.innerHTML = items
-      .map((s, idx) => {
-        const meta = [];
-        if (s.kind === "history" && s.count) meta.push(`${s.count}x`);
-        if (s.min_price) meta.push(`de la ${s.min_price} MDL`);
-        const metaText = meta.length ? `<span class="suggestion-meta">${meta.join(" · ")}</span>` : "";
-        return `
-          <button type="button" class="suggestion" data-text="${escapeHtml(s.text)}" data-idx="${idx}">
-            <span class="suggestion-text">${escapeHtml(s.text)}</span>
-            ${metaText}
-          </button>
-        `;
-      })
-      .join("");
-    open();
-  };
-
   const escapeHtml = (str) =>
     String(str)
       .replaceAll("&", "&amp;")
@@ -62,21 +41,47 @@
       .replaceAll('"', "&quot;")
       .replaceAll("'", "&#039;");
 
-  const fetchSuggestions = async () => {
-    const q = input.value.trim();
-    const mode = modeSelect.value;
-    if (q.length < 2) {
+  const render = (items) => {
+    if (!items || items.length === 0) {
       close();
       return;
     }
+
+    box.innerHTML = items
+      .map((s, idx) => {
+        const isRecent = s.kind === "recent";
+        const meta = [];
+        if (isRecent) {
+          meta.push('<span class="suggestion-icon">&#128339;</span>');
+        }
+        if (s.kind === "history" && s.count) meta.push(`${s.count}x`);
+        if (s.min_price) meta.push(`de la ${s.min_price} MDL`);
+        const metaHtml = meta.length
+          ? `<span class="suggestion-meta">${meta.join(" · ")}</span>`
+          : "";
+        return `
+          <button type="button" class="suggestion${isRecent ? " suggestion--recent" : ""}"
+                  data-text="${escapeHtml(s.text)}"
+                  data-mode="${escapeHtml(s.mode || getMode())}"
+                  data-idx="${idx}">
+            <span class="suggestion-text">${escapeHtml(s.text)}</span>
+            ${metaHtml}
+          </button>
+        `;
+      })
+      .join("");
+    open();
+  };
+
+  const fetchSuggestions = async () => {
+    const q = input.value.trim();
+    const mode = getMode();
     try {
-      const res = await fetch(`/suggest/?q=${encodeURIComponent(q)}&mode=${encodeURIComponent(mode)}`, {
-        headers: { "Accept": "application/json" },
-      });
-      if (!res.ok) {
-        close();
-        return;
-      }
+      const res = await fetch(
+        `/suggest/?q=${encodeURIComponent(q)}&mode=${encodeURIComponent(mode)}`,
+        { headers: { Accept: "application/json" } }
+      );
+      if (!res.ok) { close(); return; }
       const data = await res.json();
       render(data.suggestions || []);
     } catch {
@@ -87,7 +92,11 @@
   const debouncedFetch = debounce(fetchSuggestions, 160);
 
   input.addEventListener("input", debouncedFetch);
-  modeSelect.addEventListener("change", debouncedFetch);
+  if (modeSelect) modeSelect.addEventListener("change", debouncedFetch);
+
+  input.addEventListener("focus", () => {
+    if (input.value.trim().length < 2) fetchSuggestions();
+  });
 
   box.addEventListener("click", (e) => {
     const btn = e.target.closest("button.suggestion");
@@ -106,4 +115,3 @@
     if (e.key === "Escape") close();
   });
 })();
-

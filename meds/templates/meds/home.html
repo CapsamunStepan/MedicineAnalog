@@ -15,7 +15,7 @@
     </div>
     <form method="GET" class="search-form">
         <label>
-            <input type="text" name="query" value="{{ query }}" placeholder="Introdu numele medicamentului..." required>
+            <input type="text" name="query" value="{{ query }}" placeholder="Introdu numele medicamentului..." required autocomplete="off">
         </label>
         <button type="submit">Caută</button>
     </form>
@@ -79,19 +79,6 @@
                         {% for p in landing.popular_ingredients %}
                             <a class="chip" href="/?query={{ p.active_ingredient|urlencode }}&mode=ingredient">
                                 {{ p.active_ingredient }} · {{ p.cnt }} · de la {{ p.min_price }} MDL
-                            </a>
-                        {% endfor %}
-                    </div>
-                </section>
-            {% endif %}
-
-            {% if landing.recent_searches %}
-                <section class="pharmacy-section landing-section">
-                    <h2>Căutări recente</h2>
-                    <div class="analog-chips">
-                        {% for s in landing.recent_searches %}
-                            <a class="chip" href="/?query={{ s.query|urlencode }}&mode={{ s.mode }}">
-                                {{ s.query }}
                             </a>
                         {% endfor %}
                     </div>

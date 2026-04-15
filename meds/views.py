@@ -60,15 +60,6 @@ def home(request):
             .order_by("-cnt")[:12]
         )
 
-        session_key = request.session.session_key or ""
-        recent_searches = []
-        if session_key:
-            recent_searches = list(
-                SearchQuery.objects.filter(session_key=session_key)
-                .order_by("-created_at")
-                .values("query", "mode")[:8]
-            )
-
         top_searches = list(
             SearchQuery.objects.values("query_norm", "mode")
             .annotate(cnt=Count("id"))
@@ -79,7 +70,6 @@ def home(request):
             "total_medicines": total_medicines,
             "total_pharmacies": total_pharmacies,
             "popular_ingredients": popular_ingredients,
-            "recent_searches": recent_searches,
             "top_searches": top_searches,
         }
 
@@ -115,10 +105,33 @@ def medicine_detail(request, medicine_id: int):
             .order_by("min_price")
         )
 
+    cheap_analogs = []
+    if medicine.active_ingredient:
+        cheap_analogs = list(
+            Medicine.objects.filter(active_ingredient=medicine.active_ingredient)
+            .exclude(id=medicine.id)
+            .order_by("price")[:6]
+        )
+
+    if len(cheap_analogs) < 6:
+        existing_ids = {medicine.id} | {a.id for a in cheap_analogs}
+        first_word = medicine.title.split()[0] if medicine.title else ""
+        if first_word and len(first_word) >= 3:
+            name_matches = (
+                Medicine.objects.filter(title__istartswith=first_word)
+                .exclude(id__in=existing_ids)
+                .order_by("price")[: 6 - len(cheap_analogs)]
+            )
+            cheap_analogs.extend(name_matches)
+
     return render(
         request,
         "meds/medicine_detail.html",
-        {"medicine": medicine, "price_compare": price_compare},
+        {
+            "medicine": medicine,
+            "price_compare": price_compare,
+            "cheap_analogs": cheap_analogs,
+        },
     )
 
 
@@ -140,15 +153,34 @@ def analogs(request):
 def suggest(request):
     q = (request.GET.get("q") or "").strip()
     mode = request.GET.get("mode") or SearchQuery.MODE_TITLE
-    if not q or len(q) < 2:
-        return JsonResponse({"suggestions": []})
-
-    q_norm = q.lower()
     mode = mode if mode in (SearchQuery.MODE_TITLE, SearchQuery.MODE_INGREDIENT) else SearchQuery.MODE_TITLE
 
+    if not q or len(q) < 2:
+        if not request.session.session_key:
+            request.session.create()
+        session_key = request.session.session_key or ""
+
+        recents = []
+        seen = set()
+        if session_key:
+            for row in (
+                SearchQuery.objects.filter(session_key=session_key)
+                .order_by("-created_at")
+                .values("query", "mode")[:20]
+            ):
+                key = row["query"].strip().lower()
+                if key in seen:
+                    continue
+                seen.add(key)
+                recents.append({"text": row["query"], "kind": "recent", "mode": row["mode"]})
+                if len(recents) >= 6:
+                    break
+
+        return JsonResponse({"suggestions": recents})
+
+    q_norm = q.lower()
     suggestions = []
 
-    # 1) From search history (top for prefix)
     for row in (
         SearchQuery.objects.filter(mode=mode, query_norm__startswith=q_norm)
         .values("query_norm")
@@ -157,7 +189,6 @@ def suggest(request):
     ):
         suggestions.append({"text": row["query_norm"], "kind": "history", "count": row["cnt"]})
 
-    # 2) From medicines (titles or active ingredients)
     if mode == SearchQuery.MODE_INGREDIENT:
         med_rows = (
             Medicine.objects.exclude(active_ingredient__isnull=True)
@@ -193,7 +224,6 @@ def suggest(request):
                 }
             )
 
-    # Deduplicate by text, keep first occurrence
     seen = set()
     deduped = []
     for s in suggestions:
