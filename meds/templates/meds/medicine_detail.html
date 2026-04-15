@@ -5,6 +5,11 @@
     <meta charset="UTF-8">
     <title>{{ medicine.title }} — MedicineAnalog</title>
     <link rel="stylesheet" href="{% static 'meds/css/styles.css' %}">
+    <script>
+        (function(){var t=localStorage.getItem("ma-theme")||"system";
+        var r=t==="system"?window.matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light":t;
+        document.documentElement.setAttribute("data-theme",r);})();
+    </script>
 </head>
 <body>
 <header>
@@ -23,6 +28,7 @@
         </label>
         <button type="submit">Caută</button>
     </form>
+    <button class="theme-toggle" title="Сменить тему"></button>
 </header>
 
 <main class="detail-container">
@@ -110,6 +116,7 @@
     {% endif %}
 </main>
 
+<script src="{% static 'meds/js/theme.js' %}"></script>
 <script src="{% static 'meds/js/search_suggest.js' %}"></script>
 </body>
 </html>
