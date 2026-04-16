@@ -66,10 +66,19 @@ def home(request):
             .order_by("-cnt")[:8]
         )
 
+        substance_count = (
+            Medicine.objects.exclude(active_ingredient__isnull=True)
+            .exclude(active_ingredient__exact="")
+            .values("active_ingredient")
+            .distinct()
+            .count()
+        )
+
         landing = {
             "total_medicines": total_medicines,
             "total_pharmacies": total_pharmacies,
             "popular_ingredients": popular_ingredients,
+            "substance_count": substance_count,
         }
 
     all_medicines = sorted(

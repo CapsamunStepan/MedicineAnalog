@@ -30,24 +30,58 @@
     {% if not query %}
         <section class="hero">
             <div class="hero-content">
-                <div class="hero-intro">
-                    <h1>Căutare medicamente și analogi</h1>
-                    <p class="hero-subtitle">
-                        Compară prețurile între farmacii și găsește analogi după substanța activă.
-                    </p>
+                <div class="hero-top">
+                    <div class="hero-intro">
+                        <h1>Căutare medicamente și analogi</h1>
+                        <p class="hero-subtitle">
+                            Compară prețurile între farmacii și găsește analogi după substanța activă.
+                        </p>
 
-                    {% if landing.total_medicines %}
-                        <div class="hero-stats">
-                            <div class="stat">
-                                <div class="stat-value">{{ landing.total_medicines }}</div>
-                                <div class="stat-label">produse în bază</div>
+                        {% if landing.total_medicines %}
+                            <div class="hero-stats">
+                                <div class="stat">
+                                    <div class="stat-value">{{ landing.total_medicines }}</div>
+                                    <div class="stat-label">produse în bază</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">{{ landing.total_pharmacies }}</div>
+                                    <div class="stat-label">farmacii</div>
+                                </div>
                             </div>
-                            <div class="stat">
-                                <div class="stat-value">{{ landing.total_pharmacies }}</div>
-                                <div class="stat-label">farmacii</div>
+                        {% endif %}
+                    </div>
+
+                    <aside class="hero-aside" aria-label="Statistici rapide">
+                        <div class="hero-spotlight">
+                            <div class="hero-visual" aria-hidden="true">
+                                <span class="hero-blob hero-blob--a"></span>
+                                <span class="hero-blob hero-blob--b"></span>
+                                <span class="hero-blob hero-blob--c"></span>
                             </div>
+                            <p class="hero-spotlight-kicker">La un clic distanță</p>
+                            <h3 class="hero-spotlight-title">Tot ce e în baza noastră</h3>
+                            <ul class="hero-facts">
+                                <li>
+                                    <span class="hero-fact-ico" aria-hidden="true">✨</span>
+                                    <span>Actualizăm datele despre prețuri și produse, ca să ai mereu <strong class="hero-fact-strong">informații actuale</strong>.</span>
+                                </li>
+                                {% if landing.substance_count %}
+                                <li>
+                                    <span class="hero-fact-ico" aria-hidden="true">🧬</span>
+                                    <span><strong class="hero-fact-strong">{{ landing.substance_count }}</strong> substanțe active diferite</span>
+                                </li>
+                                {% endif %}
+                                <li>
+                                    <span class="hero-fact-ico" aria-hidden="true">⚡</span>
+                                    <span>Rezultate grupate pe farmacie — alegi tu unde cumperi</span>
+                                </li>
+                                <li>
+                                    <span class="hero-fact-ico" aria-hidden="true">🔒</span>
+                                    <span>Fără cont: doar caută și compară</span>
+                                </li>
+                            </ul>
                         </div>
-                    {% endif %}
+                    </aside>
                 </div>
 
                 <div class="hero-how">
