@@ -1,5 +1,6 @@
 /* ===== CSS Variables (Light theme) ===== */
 :root {
+    --header-body-offset: 92px;
     --bg: #f4f6f8;
     --text: #333;
     --text-heading: #1d2a33;
@@ -109,7 +110,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--bg);
     color: var(--text);
-    padding-top: 100px;
+    padding-top: var(--header-body-offset, 92px);
     transition: background-color 0.3s, color 0.3s;
 }
 
@@ -136,7 +137,7 @@ body {
 .hero-top {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 24px 48px;
     width: 100%;
 }
@@ -290,8 +291,8 @@ body {
 }
 
 .hero-how {
-    margin-top: 32px;
-    padding-top: 32px;
+    margin-top: 22px;
+    padding-top: 26px;
     border-top: 1px solid var(--border);
     width: 100%;
 }
@@ -306,7 +307,7 @@ body {
 }
 
 .hero-how-grid {
-    gap: 16px;
+    gap: 26px;
 }
 
 .hero-how .how-card {
@@ -386,73 +387,123 @@ body {
 }
 
 /* ===== Header ===== */
-header {
+.site-header {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     background: var(--header-bg);
     color: white;
-    padding: 20px 40px;
+    padding: 14px clamp(12px, 3vw, 32px);
     display: flex;
     align-items: center;
+    gap: clamp(10px, 2vw, 20px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 1000;
+    box-sizing: border-box;
 }
 
-.logo a {
+.header-logo {
+    flex-shrink: 0;
+}
+
+.logo-link {
     text-decoration: none;
     color: white;
-    font-size: 24px;
-    font-weight: bold;
-    margin: 0 200px 0 50px;
+    font-size: clamp(1.05rem, 2.2vw, 1.45rem);
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    line-height: 1.2;
 }
 
-.logo a:hover {
-    opacity: 0.8;
+.logo-link:hover {
+    opacity: 0.88;
+}
+
+.logo-full {
+    display: inline;
+}
+
+.logo-short {
+    display: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.18);
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
 }
 
 header .search-form {
+    flex: 1 1 auto;
+    min-width: 0;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 10px;
     position: relative;
 }
 
+header .search-field {
+    flex: 1 1 220px;
+    min-width: 0;
+    display: block;
+}
+
 header .search-form input {
-    padding: 10px 15px;
+    padding: 10px 16px;
     border-radius: 30px;
     border: none;
-    width: 500px;
+    width: 100%;
+    max-width: none;
     outline: none;
     background: var(--header-input-bg);
     color: var(--header-input-color);
+    box-sizing: border-box;
 }
 
-header .search-form button {
+.search-submit {
+    flex-shrink: 0;
     padding: 10px 20px;
     border-radius: 30px;
     border: none;
     background-color: var(--header-btn-bg);
     color: var(--header-btn-color);
     cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: bold;
+    transition: background 0.2s ease, transform 0.15s ease;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
 }
 
-header .search-form button:hover {
+.search-submit:hover {
     background-color: var(--header-btn-hover);
+}
+
+.search-submit-icon {
+    display: none;
+    flex-shrink: 0;
+}
+
+.search-submit-text {
+    display: inline;
 }
 
 /* ===== Theme toggle ===== */
 .theme-toggle {
-    margin-left: auto;
     flex-shrink: 0;
+    margin-left: 0;
     background: rgba(255, 255, 255, 0.12);
     border: none;
     border-radius: 999px;
-    width: 38px;
-    height: 38px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -466,10 +517,74 @@ header .search-form button:hover {
     background: rgba(255, 255, 255, 0.22);
 }
 
+@media (max-width: 960px) {
+    .logo-full {
+        display: none;
+    }
+
+    .logo-short {
+        display: inline-flex;
+    }
+}
+
+@media (max-width: 680px) {
+    :root {
+        --header-body-offset: 96px;
+    }
+
+    .site-header {
+        padding: 10px 12px;
+        gap: 8px;
+    }
+
+    .header-logo {
+        display: none;
+    }
+
+    .search-submit-text {
+        display: none;
+    }
+
+    .search-submit-icon {
+        display: block;
+    }
+
+    .search-submit {
+        padding: 0;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+    }
+
+    header .search-form {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    header .search-field {
+        flex: 1 1 auto;
+        order: 1;
+        min-width: 0;
+    }
+
+    header .search-submit {
+        order: 2;
+    }
+
+    header .mode-select {
+        flex: 1 1 100%;
+        order: 3;
+    }
+
+    header .mode-select select {
+        width: 100%;
+    }
+}
+
 /* ===== Suggestions dropdown ===== */
 .suggestions {
     position: absolute;
-    top: 52px;
+    top: calc(100% + 8px);
     left: 0;
     width: 100%;
     background: var(--surface);
@@ -1074,20 +1189,6 @@ header .search-form button:hover {
 
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-
-    header .search-form input {
-        width: 100%;
-    }
-
-    header .search-form {
-        width: 100%;
-    }
-
     .hero {
         padding: 10px 16px 0 16px;
     }
@@ -1103,10 +1204,6 @@ header .search-form button:hover {
 
     .hero-content h1 {
         font-size: 28px;
-    }
-
-    .suggestions {
-        top: 104px;
     }
 
     .how-grid {
@@ -1155,16 +1252,5 @@ header .search-form button:hover {
 
     .medicine-grid {
         padding: 0 10px 30px 10px;
-    }
-
-    .theme-toggle {
-        position: absolute;
-        top: 16px;
-        right: 16px;
-        margin-left: 0;
-    }
-
-    .logo a {
-        margin: 0;
     }
 }
