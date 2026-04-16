@@ -77,3 +77,9 @@ class SearchViewsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "/static/meds/img/medicine-placeholder.svg")
+
+    def test_home_search_renders_pagination_hook(self):
+        response = self.client.get(reverse("home"), {"query": "paracetamol"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'class="results-pagination" data-page-size="10"')
