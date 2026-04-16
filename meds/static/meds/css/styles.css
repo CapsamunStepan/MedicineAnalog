@@ -597,7 +597,7 @@ header .search-form input {
 
     .main-mobile-toolbar-shell {
         display: block;
-        padding: 16px 24px 0;
+        padding: 20px 28px 12px;
     }
 
     main > .main-mobile-toolbar-shell {
@@ -610,7 +610,7 @@ header .search-form input {
     }
 
     .hero {
-        padding-top: 16px;
+        padding: 8px 28px 0 28px;
     }
 
     .detail-layout {
@@ -636,7 +636,7 @@ header .search-form input {
     }
 
     .main-mobile-toolbar-shell {
-        padding: 12px 16px 0;
+        padding: 20px 20px 12px;
     }
 
     .detail-container > .main-mobile-toolbar-shell {
@@ -1245,7 +1245,7 @@ header .search-form input {
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
     .hero {
-        padding: 10px 16px 0 16px;
+        padding: 8px 20px 20px 20px;
     }
 
     .hero-content {
