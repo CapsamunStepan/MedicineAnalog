@@ -13,7 +13,6 @@
 </head>
 <body>
 
-<!-- Header -->
 <header>
     <div class="logo">
         <a href="/" class="logo-link">MedicineAnalog</a>
@@ -27,83 +26,65 @@
     <button class="theme-toggle" title="Сменить тему"></button>
 </header>
 
-<!-- Search Results -->
 <main>
     {% if not query %}
         <section class="hero">
             <div class="hero-content">
-                <h1>Căutare medicamente și analogi</h1>
-                <p class="hero-subtitle">
-                    Compară prețurile între farmacii și găsește analogi după substanța activă.
-                </p>
+                <div class="hero-intro">
+                    <h1>Căutare medicamente și analogi</h1>
+                    <p class="hero-subtitle">
+                        Compară prețurile între farmacii și găsește analogi după substanța activă.
+                    </p>
 
-                {% if landing.total_medicines %}
-                    <div class="hero-stats">
-                        <div class="stat">
-                            <div class="stat-value">{{ landing.total_medicines }}</div>
-                            <div class="stat-label">produse în bază</div>
+                    {% if landing.total_medicines %}
+                        <div class="hero-stats">
+                            <div class="stat">
+                                <div class="stat-value">{{ landing.total_medicines }}</div>
+                                <div class="stat-label">produse în bază</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">{{ landing.total_pharmacies }}</div>
+                                <div class="stat-label">farmacii</div>
+                            </div>
                         </div>
-                        <div class="stat">
-                            <div class="stat-value">{{ landing.total_pharmacies }}</div>
-                            <div class="stat-label">farmacii</div>
-                        </div>
-                    </div>
-                {% endif %}
-
-                <div class="hero-tips">
-                    <div class="tip">Încearcă: <a href="/?query=panadol&mode=title">„panadol”</a></div>
-                    <div class="tip">Sau după substanță: <a href="/?query=paracetamol&mode=ingredient">„paracetamol”</a></div>
+                    {% endif %}
                 </div>
-            </div>
-        </section>
 
-        <section class="how">
-            <div class="how-inner">
-                <h2>Cum funcționează</h2>
-                <div class="how-grid">
-                    <div class="how-card">
-                        <div class="how-title">1) Caută</div>
-                        <div class="how-text">Introdu denumirea sau substanța activă.</div>
-                    </div>
-                    <div class="how-card">
-                        <div class="how-title">2) Compară</div>
-                        <div class="how-text">Vezi rezultatele pe farmacii și prețurile.</div>
-                    </div>
-                    <div class="how-card">
-                        <div class="how-title">3) Alege analogi</div>
-                        <div class="how-text">Deschide produsul și navighează după substanță.</div>
+                <div class="hero-how">
+                    <h2 class="hero-how-heading">Cum funcționează</h2>
+                    <div class="how-grid hero-how-grid">
+                        <div class="how-card">
+                            <div class="how-title">1) Caută</div>
+                            <div class="how-text">Introdu denumirea sau substanța activă.</div>
+                        </div>
+                        <div class="how-card">
+                            <div class="how-title">2) Compară</div>
+                            <div class="how-text">Vezi rezultatele pe farmacii și prețurile.</div>
+                        </div>
+                        <div class="how-card">
+                            <div class="how-title">3) Alege analogi</div>
+                            <div class="how-text">Deschide produsul și navighează după substanță.</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <div class="landing-inner">
-            {% if landing.popular_ingredients %}
-                <section class="pharmacy-section landing-section">
-                    <h2>Substanțe populare</h2>
-                    <div class="analog-chips">
-                        {% for p in landing.popular_ingredients %}
-                            <a class="chip" href="/?query={{ p.active_ingredient|urlencode }}&mode=ingredient">
-                                {{ p.active_ingredient }} · {{ p.cnt }} · de la {{ p.min_price }} MDL
-                            </a>
-                        {% endfor %}
-                    </div>
-                </section>
-            {% endif %}
-
-            {% if landing.top_searches %}
-                <section class="pharmacy-section landing-section">
-                    <h2>Top căutări</h2>
-                    <div class="analog-chips">
-                        {% for t in landing.top_searches %}
-                            <a class="chip" href="/?query={{ t.query_norm|urlencode }}&mode={{ t.mode }}">
-                                {{ t.query_norm }} · {{ t.cnt }}
-                            </a>
-                        {% endfor %}
-                    </div>
-                </section>
-            {% endif %}
-        </div>
+        {% if landing.popular_ingredients %}
+        <section class="landing-section-wrap">
+            <div class="landing-inner">
+                <h2 class="landing-heading">Substanțe populare</h2>
+                <div class="ingredient-grid">
+                    {% for p in landing.popular_ingredients %}
+                    <a class="ingredient-card" href="/?query={{ p.active_ingredient|urlencode }}&mode=ingredient">
+                        <span class="ingredient-name">{{ p.active_ingredient }}</span>
+                        <span class="ingredient-meta">{{ p.cnt }} produse · de la {{ p.min_price|floatformat:2 }} MDL</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
     {% endif %}
 
     {% if analogs %}
@@ -112,7 +93,7 @@
             <div class="analog-chips">
                 {% for a in analogs %}
                     <a class="chip" href="{% url 'analogs' %}?ingredient={{ a.active_ingredient|urlencode }}">
-                        {{ a.active_ingredient }} · de la {{ a.min_price }} MDL
+                        {{ a.active_ingredient }} · de la {{ a.min_price|floatformat:2 }} MDL
                     </a>
                 {% endfor %}
             </div>
@@ -146,7 +127,7 @@
                                 <p>Substanță: {{ medicine.active_ingredient }}</p>
                             {% endif %}
                             <div class="price-row-card">
-                                <p class="price">{{ medicine.price }} MDL</p>
+                                <p class="price">{{ medicine.price|floatformat:2 }} MDL</p>
                                 <p class="price pharmacy-label">{{ medicine.pharmacy }}</p>
                             </div>
                         </div>
@@ -169,7 +150,7 @@
                                     <p>Substanță: {{ medicine.active_ingredient }}</p>
                                 {% endif %}
                                 <div class="price-row-card">
-                                    <p class="price">{{ medicine.price }} MDL</p>
+                                    <p class="price">{{ medicine.price|floatformat:2 }} MDL</p>
                                     <p class="price pharmacy-label">{{ medicine.pharmacy }}</p>
                                 </div>
                             </div>

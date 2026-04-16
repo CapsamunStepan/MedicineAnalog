@@ -4,6 +4,12 @@ from django.shortcuts import render, get_object_or_404
 from .models import Medicine, SearchQuery
 
 
+def _fmt_price(value):
+    if value is None:
+        return ""
+    return f"{float(value):.2f}"
+
+
 def home(request):
     query = request.GET.get('query', '')
     mode = request.GET.get('mode', 'title')  # title | ingredient
@@ -57,20 +63,13 @@ def home(request):
             .exclude(active_ingredient__exact="")
             .values("active_ingredient")
             .annotate(cnt=Count("id"), min_price=Min("price"))
-            .order_by("-cnt")[:12]
-        )
-
-        top_searches = list(
-            SearchQuery.objects.values("query_norm", "mode")
-            .annotate(cnt=Count("id"))
-            .order_by("-cnt")[:12]
+            .order_by("-cnt")[:8]
         )
 
         landing = {
             "total_medicines": total_medicines,
             "total_pharmacies": total_pharmacies,
             "popular_ingredients": popular_ingredients,
-            "top_searches": top_searches,
         }
 
     all_medicines = sorted(
@@ -110,17 +109,17 @@ def medicine_detail(request, medicine_id: int):
         cheap_analogs = list(
             Medicine.objects.filter(active_ingredient=medicine.active_ingredient)
             .exclude(id=medicine.id)
-            .order_by("price")[:6]
+            .order_by("price")[:5]
         )
 
-    if len(cheap_analogs) < 6:
+    if len(cheap_analogs) < 5:
         existing_ids = {medicine.id} | {a.id for a in cheap_analogs}
         first_word = medicine.title.split()[0] if medicine.title else ""
         if first_word and len(first_word) >= 3:
             name_matches = (
                 Medicine.objects.filter(title__istartswith=first_word)
                 .exclude(id__in=existing_ids)
-                .order_by("price")[: 6 - len(cheap_analogs)]
+                .order_by("price")[: 5 - len(cheap_analogs)]
             )
             cheap_analogs.extend(name_matches)
 
@@ -178,16 +177,7 @@ def suggest(request):
 
         return JsonResponse({"suggestions": recents})
 
-    q_norm = q.lower()
     suggestions = []
-
-    for row in (
-        SearchQuery.objects.filter(mode=mode, query_norm__startswith=q_norm)
-        .values("query_norm")
-        .annotate(cnt=Count("id"))
-        .order_by("-cnt")[:6]
-    ):
-        suggestions.append({"text": row["query_norm"], "kind": "history", "count": row["cnt"]})
 
     if mode == SearchQuery.MODE_INGREDIENT:
         med_rows = (
@@ -204,7 +194,7 @@ def suggest(request):
                     "text": r["active_ingredient"],
                     "kind": "ingredient",
                     "count": r["cnt"],
-                    "min_price": str(r["min_price"]),
+                    "min_price": _fmt_price(r["min_price"]),
                 }
             )
     else:
@@ -220,7 +210,7 @@ def suggest(request):
                     "text": r["title"],
                     "kind": "title",
                     "count": r["cnt"],
-                    "min_price": str(r["min_price"]),
+                    "min_price": _fmt_price(r["min_price"]),
                 }
             )
 

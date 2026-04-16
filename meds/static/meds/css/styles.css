@@ -115,7 +115,7 @@ body {
 
 /* ===== Hero ===== */
 .hero {
-    padding: 10px 20px 0 20px;
+    padding: 10px 24px 0 24px;
 }
 
 .hero-content {
@@ -123,28 +123,68 @@ body {
     margin: 0 auto;
     background: var(--hero-gradient);
     border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 26px 24px;
+    border-radius: 22px;
+    padding: 40px 44px 44px 44px;
     box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    box-sizing: border-box;
+}
+
+.hero-intro {
+    flex-shrink: 0;
+}
+
+.hero-how {
+    margin-top: 28px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+}
+
+.hero-how-heading {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 16px 0;
+}
+
+.hero-how-grid {
+    gap: 16px;
+}
+
+.hero-how .how-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hero-how .how-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-card);
 }
 
 .hero-content h1 {
-    font-size: 34px;
-    margin-bottom: 8px;
+    font-size: 38px;
+    margin-bottom: 12px;
     color: var(--text-heading);
+    line-height: 1.2;
+    max-width: 920px;
 }
 
 .hero-subtitle {
-    font-size: 16px;
+    font-size: 17px;
+    line-height: 1.45;
     color: var(--text-secondary);
-    max-width: 720px;
+    max-width: 820px;
 }
 
 .hero-stats {
     display: flex;
-    gap: 16px;
+    gap: 18px;
     flex-wrap: wrap;
-    margin-top: 16px;
+    margin-top: 22px;
 }
 
 .stat {
@@ -333,16 +373,7 @@ header .search-form button:hover {
     opacity: 0.6;
 }
 
-/* ===== How it works ===== */
-.how {
-    padding: 14px 20px 0 20px;
-}
-
-.how-inner {
-    max-width: 1320px;
-    margin: 0 auto;
-}
-
+/* ===== How it works (cards also used inside .hero-how) ===== */
 .landing-inner {
     max-width: 1320px;
     margin: 0 auto;
@@ -358,12 +389,6 @@ header .search-form button:hover {
 
 .landing-section .analog-chips {
     padding: 0 6px 20px 6px;
-}
-
-.how-inner h2 {
-    margin: 18px 0 10px 6px;
-    font-size: 18px;
-    color: var(--text-heading);
 }
 
 .how-grid {
@@ -399,6 +424,58 @@ header .search-form button:hover {
     outline: none;
     background: var(--header-input-bg);
     color: var(--header-input-color);
+}
+
+/* ===== Landing sections (popular ingredients) ===== */
+.landing-section-wrap {
+    padding: 0 24px;
+    margin-top: 24px;
+}
+
+.landing-heading {
+    font-size: 18px;
+    color: var(--text-heading);
+    margin: 0 auto 12px auto;
+    max-width: 1320px;
+    padding-left: 6px;
+}
+
+.ingredient-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    max-width: 1320px;
+    margin: 0 auto;
+    padding-bottom: 30px;
+}
+
+.ingredient-card {
+    background: var(--surface);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    padding: 16px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.ingredient-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-card);
+}
+
+.ingredient-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--accent-dark);
+}
+
+.ingredient-meta {
+    font-size: 13px;
+    color: var(--text-muted);
 }
 
 /* ===== Chips ===== */
@@ -529,6 +606,14 @@ header .search-form button:hover {
     flex-wrap: wrap;
 }
 
+.detail-disclaimer {
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-style: italic;
+    line-height: 1.4;
+}
+
 .btn {
     display: inline-block;
     padding: 12px 22px;
@@ -611,7 +696,7 @@ header .search-form button:hover {
 
 .analogs-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+    grid-template-columns: repeat(5, 1fr);
     gap: 14px;
 }
 
@@ -850,6 +935,19 @@ header .search-form button:hover {
         width: 100%;
     }
 
+    .hero {
+        padding: 10px 16px 0 16px;
+    }
+
+    .hero-content {
+        padding: 28px 18px 32px 18px;
+    }
+
+    .hero-how {
+        margin-top: 22px;
+        padding-top: 22px;
+    }
+
     .hero-content h1 {
         font-size: 28px;
     }
@@ -860,6 +958,10 @@ header .search-form button:hover {
 
     .how-grid {
         grid-template-columns: 1fr;
+    }
+
+    .ingredient-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .detail-layout {
@@ -881,7 +983,7 @@ header .search-form button:hover {
     }
 
     .analogs-grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
         gap: 10px;
     }
 

@@ -46,7 +46,7 @@
                         <div class="medicine-info">
                             <h3>{{ r.title }}</h3>
                             <p>Producător: {{ r.manufacturer }}</p>
-                            <p class="price">de la {{ r.min_price }} MDL</p>
+                            <p class="price">de la {{ r.min_price|floatformat:2 }} MDL</p>
                         </div>
                     </div>
                 {% endfor %}
@@ -61,4 +61,3 @@
 <script src="{% static 'meds/js/search_suggest.js' %}"></script>
 </body>
 </html>
-

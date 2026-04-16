@@ -61,7 +61,7 @@
                     {% endif %}
                 </div>
 
-                <p class="detail-price">{{ medicine.price }} MDL</p>
+                <p class="detail-price">{{ medicine.price|floatformat:2 }} MDL</p>
 
                 <div class="detail-actions">
                     <a class="btn" href="{{ medicine.link }}" target="_blank" rel="noopener noreferrer">
@@ -71,6 +71,10 @@
                         Înapoi la căutare
                     </a>
                 </div>
+
+                <p class="detail-disclaimer">
+                    Consultați un medic sau un farmacist înainte de utilizarea oricărui medicament.
+                </p>
             </div>
         </div>
     </section>
@@ -82,7 +86,7 @@
             {% for row in price_compare %}
             <div class="price-row">
                 <div class="price-pharmacy">{{ row.pharmacy }}</div>
-                <div class="price-value">{{ row.min_price }} MDL</div>
+                <div class="price-value">{{ row.min_price|floatformat:2 }} MDL</div>
                 <div class="price-link">
                     <a href="{{ row.link }}" target="_blank" rel="noopener noreferrer">link</a>
                 </div>
@@ -105,7 +109,7 @@
                     <p class="analog-name">{{ analog.title }}</p>
                     <p class="analog-producer">{{ analog.manufacturer }}</p>
                     <div class="analog-bottom">
-                        <span class="analog-price">{{ analog.price }} MDL</span>
+                        <span class="analog-price">{{ analog.price|floatformat:2 }} MDL</span>
                         <span class="analog-pharmacy">{{ analog.pharmacy }}</span>
                     </div>
                 </div>

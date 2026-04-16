@@ -41,6 +41,12 @@
       .replaceAll('"', "&quot;")
       .replaceAll("'", "&#039;");
 
+  const formatPrice = (v) => {
+    if (v == null || v === "") return "";
+    const n = Number(String(v).replace(",", "."));
+    return Number.isFinite(n) ? n.toFixed(2) : String(v);
+  };
+
   const render = (items) => {
     if (!items || items.length === 0) {
       close();
@@ -55,7 +61,7 @@
           meta.push('<span class="suggestion-icon">&#128339;</span>');
         }
         if (s.kind === "history" && s.count) meta.push(`${s.count}x`);
-        if (s.min_price) meta.push(`de la ${s.min_price} MDL`);
+        if (s.min_price) meta.push(`de la ${formatPrice(s.min_price)} MDL`);
         const metaHtml = meta.length
           ? `<span class="suggestion-meta">${meta.join(" · ")}</span>`
           : "";
