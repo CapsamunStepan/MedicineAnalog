@@ -25,12 +25,6 @@
         <label class="search-field">
             <input type="text" name="query" placeholder="Introdu numele medicamentului..." required autocomplete="off">
         </label>
-        <label class="mode-select">
-            <select name="mode">
-                <option value="title" selected>după denumire</option>
-                <option value="ingredient">după substanță</option>
-            </select>
-        </label>
         <button type="submit" class="search-submit" aria-label="Caută" title="Caută">
             <span class="search-submit-text">Caută</span>
             <svg class="search-submit-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
@@ -42,6 +36,7 @@
 </header>
 
 <main class="detail-container">
+    {% include "meds/_mobile_main_toolbar.html" with search_action="/" %}
     <section class="detail-card">
         <h1 class="detail-title">Analogi</h1>
         {% if ingredient %}
@@ -62,7 +57,7 @@
                 {% endfor %}
             </div>
         {% else %}
-            <p>Nu s-a găsit nimic. Deschide un produs și apasă pe substanța activă sau caută „după substanță”.</p>
+            <p>Nu s-a găsit nimic. Deschide un produs și apasă pe substanța activă sau caută direct după denumire ori substanță activă.</p>
         {% endif %}
     </section>
 </main>

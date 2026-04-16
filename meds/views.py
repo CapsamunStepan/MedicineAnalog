@@ -12,7 +12,6 @@ def _fmt_price(value):
 
 def home(request):
     query = request.GET.get('query', '')
-    mode = request.GET.get('mode', 'title')  # title | ingredient
     pharmacies = {}
     analogs = []
     landing = {}
@@ -27,7 +26,7 @@ def home(request):
             SearchQuery.objects.create(
                 query=query_clean,
                 query_norm=query_clean.lower(),
-                mode=mode if mode in (SearchQuery.MODE_TITLE, SearchQuery.MODE_INGREDIENT) else SearchQuery.MODE_TITLE,
+                mode=SearchQuery.MODE_TITLE,  # legacy field, search now always covers both sources
                 session_key=request.session.session_key or "",
             )
 
@@ -92,7 +91,6 @@ def home(request):
         {
             'pharmacies': pharmacies,
             'query': query,
-            'mode': mode,
             'analogs': analogs,
             'landing': landing,
             'total_count': len(all_medicines),
@@ -160,8 +158,6 @@ def analogs(request):
 
 def suggest(request):
     q = (request.GET.get("q") or "").strip()
-    mode = request.GET.get("mode") or SearchQuery.MODE_TITLE
-    mode = mode if mode in (SearchQuery.MODE_TITLE, SearchQuery.MODE_INGREDIENT) else SearchQuery.MODE_TITLE
 
     if not q or len(q) < 2:
         if not request.session.session_key:
@@ -174,13 +170,13 @@ def suggest(request):
             for row in (
                 SearchQuery.objects.filter(session_key=session_key)
                 .order_by("-created_at")
-                .values("query", "mode")[:20]
+                .values("query")[:20]
             ):
                 key = row["query"].strip().lower()
                 if key in seen:
                     continue
                 seen.add(key)
-                recents.append({"text": row["query"], "kind": "recent", "mode": row["mode"]})
+                recents.append({"text": row["query"], "kind": "recent"})
                 if len(recents) >= 6:
                     break
 
@@ -188,40 +184,39 @@ def suggest(request):
 
     suggestions = []
 
-    if mode == SearchQuery.MODE_INGREDIENT:
-        med_rows = (
-            Medicine.objects.exclude(active_ingredient__isnull=True)
-            .exclude(active_ingredient__exact="")
-            .filter(active_ingredient__icontains=q)
-            .values("active_ingredient")
-            .annotate(cnt=Count("id"), min_price=Min("price"))
-            .order_by("-cnt")[:6]
+    ingredient_rows = (
+        Medicine.objects.exclude(active_ingredient__isnull=True)
+        .exclude(active_ingredient__exact="")
+        .filter(active_ingredient__icontains=q)
+        .values("active_ingredient")
+        .annotate(cnt=Count("id"), min_price=Min("price"))
+        .order_by("-cnt")[:6]
+    )
+    for row in ingredient_rows:
+        suggestions.append(
+            {
+                "text": row["active_ingredient"],
+                "kind": "ingredient",
+                "count": row["cnt"],
+                "min_price": _fmt_price(row["min_price"]),
+            }
         )
-        for r in med_rows:
-            suggestions.append(
-                {
-                    "text": r["active_ingredient"],
-                    "kind": "ingredient",
-                    "count": r["cnt"],
-                    "min_price": _fmt_price(r["min_price"]),
-                }
-            )
-    else:
-        med_rows = (
-            Medicine.objects.filter(title__icontains=q)
-            .values("title")
-            .annotate(cnt=Count("id"), min_price=Min("price"))
-            .order_by("-cnt")[:6]
+
+    title_rows = (
+        Medicine.objects.filter(title__icontains=q)
+        .values("title")
+        .annotate(cnt=Count("id"), min_price=Min("price"))
+        .order_by("-cnt")[:6]
+    )
+    for row in title_rows:
+        suggestions.append(
+            {
+                "text": row["title"],
+                "kind": "title",
+                "count": row["cnt"],
+                "min_price": _fmt_price(row["min_price"]),
+            }
         )
-        for r in med_rows:
-            suggestions.append(
-                {
-                    "text": r["title"],
-                    "kind": "title",
-                    "count": r["cnt"],
-                    "min_price": _fmt_price(r["min_price"]),
-                }
-            )
 
     seen = set()
     deduped = []

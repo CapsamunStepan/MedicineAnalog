@@ -37,6 +37,7 @@
 </header>
 
 <main>
+    {% include "meds/_mobile_main_toolbar.html" with search_action="/" %}
     {% if not query %}
         <section class="hero">
             <div class="hero-content">
@@ -120,7 +121,7 @@
                 <h2 class="landing-heading">Substanțe populare</h2>
                 <div class="ingredient-grid">
                     {% for p in landing.popular_ingredients %}
-                    <a class="ingredient-card" href="/?query={{ p.active_ingredient|urlencode }}&mode=ingredient">
+                    <a class="ingredient-card" href="/?query={{ p.active_ingredient|urlencode }}">
                         <span class="ingredient-name">{{ p.active_ingredient }}</span>
                         <span class="ingredient-meta">{{ p.cnt }} produse · de la {{ p.min_price|floatformat:2 }} MDL</span>
                     </a>
