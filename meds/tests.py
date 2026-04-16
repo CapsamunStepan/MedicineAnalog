@@ -27,6 +27,15 @@ class SearchViewsTestCase(TestCase):
             manufacturer="Bios",
             pharmacy="Farmacia 2",
         )
+        cls.no_image_medicine = Medicine.objects.create(
+            title="Paracetamol 500mg comp.",
+            active_ingredient="Paracetamol",
+            price=Decimal("8.35"),
+            link="https://example.com/paracetamol",
+            img="",
+            manufacturer="Eurofarmaco SA",
+            pharmacy="FarmaciaFamiliei",
+        )
 
     def test_home_search_matches_title_and_active_ingredient(self):
         response = self.client.get(reverse("home"), {"query": "ibuprofen"})
@@ -62,3 +71,9 @@ class SearchViewsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "MedicineAnalog")
+
+    def test_missing_image_uses_placeholder_on_detail_page(self):
+        response = self.client.get(reverse("medicine_detail", args=[self.no_image_medicine.id]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "/static/meds/img/medicine-placeholder.svg")

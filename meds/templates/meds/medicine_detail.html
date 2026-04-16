@@ -40,7 +40,7 @@
     <section class="detail-card detail-card--main">
         <div class="detail-layout">
             <div class="detail-media">
-                <img src="{{ medicine.img }}" alt="{{ medicine.title }}">
+                {% include "meds/_medicine_image.html" with image_url=medicine.img title=medicine.title %}
             </div>
             <div class="detail-info">
                 <h1 class="detail-title">{{ medicine.title }}</h1>
@@ -108,7 +108,7 @@
             {% for analog in cheap_analogs %}
             <a href="{% url 'medicine_detail' analog.id %}" class="analog-card">
                 <div class="analog-img-wrap">
-                    <img src="{{ analog.img }}" alt="{{ analog.title }}">
+                    {% include "meds/_medicine_image.html" with image_url=analog.img title=analog.title %}
                 </div>
                 <div class="analog-body">
                     <p class="analog-name">{{ analog.title }}</p>

@@ -164,7 +164,7 @@
             <div class="medicine-grid">
                 {% for medicine in all_medicines %}
                     <a href="{% url 'medicine_detail' medicine.id %}" class="medicine-card">
-                        <img src="{{ medicine.img }}" alt="{{ medicine.title }}">
+                        {% include "meds/_medicine_image.html" with image_url=medicine.img title=medicine.title %}
                         <div class="medicine-info">
                             <h3>{{ medicine.title }}</h3>
                             <p>Producător: {{ medicine.manufacturer }}</p>
@@ -187,7 +187,7 @@
                 <div class="medicine-grid">
                     {% for medicine in medicines %}
                         <a href="{% url 'medicine_detail' medicine.id %}" class="medicine-card">
-                            <img src="{{ medicine.img }}" alt="{{ medicine.title }}">
+                            {% include "meds/_medicine_image.html" with image_url=medicine.img title=medicine.title %}
                             <div class="medicine-info">
                                 <h3>{{ medicine.title }}</h3>
                                 <p>Producător: {{ medicine.manufacturer }}</p>

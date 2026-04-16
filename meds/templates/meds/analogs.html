@@ -47,7 +47,7 @@
             <div class="medicine-grid">
                 {% for r in results %}
                     <div class="medicine-card">
-                        <img src="{{ r.img }}" alt="{{ r.title }}">
+                        {% include "meds/_medicine_image.html" with image_url=r.img title=r.title %}
                         <div class="medicine-info">
                             <h3>{{ r.title }}</h3>
                             <p>Producător: {{ r.manufacturer }}</p>

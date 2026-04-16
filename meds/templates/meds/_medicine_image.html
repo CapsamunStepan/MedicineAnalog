@@ -1,0 +1,8 @@
+{% load static %}
+{% static 'meds/img/medicine-placeholder.svg' as medicine_placeholder %}
+<img
+    src="{{ image_url|default:medicine_placeholder }}"
+    data-placeholder-src="{{ medicine_placeholder }}"
+    onerror="this.onerror=null;this.src=this.dataset.placeholderSrc;"
+    alt="{{ title }}"
+>

@@ -564,6 +564,27 @@ header .search-form input {
     display: block;
 }
 
+@media (min-width: 961px) {
+    header .search-form {
+        flex: 0 1 833px;
+        width: min(100%, 833px);
+        margin: 0 auto;
+    }
+
+    header .search-form input {
+        min-height: 46px;
+        padding: 12px 18px;
+    }
+
+    .search-submit {
+        padding: 12px 24px;
+    }
+
+    .theme-toggle {
+        margin-left: auto;
+    }
+}
+
 @media (max-width: 960px) {
     :root {
         --header-body-offset: 72px;
