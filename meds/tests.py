@@ -103,3 +103,10 @@ class SearchViewsTestCase(TestCase):
         self.assertEqual(second_page.context["page_obj"].number, 2)
         self.assertEqual(len(second_page.context["page_obj"].object_list), 3)
         self.assertContains(second_page, "Inapoi")
+
+    def test_home_search_shows_empty_state_when_nothing_found(self):
+        response = self.client.get(reverse("home"), {"query": "zzznothingmatch"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Niciun rezultat")
+        self.assertContains(response, "Nu am găsit nimic pentru")

@@ -145,6 +145,18 @@
         </section>
     {% endif %}
 
+    {% if query and not pharmacy_tabs %}
+        <section class="empty-results">
+            <div class="empty-results__card">
+                <p class="empty-results__kicker">Niciun rezultat</p>
+                <h2 class="empty-results__title">Nu am găsit nimic pentru „{{ query }}”</h2>
+                <p class="empty-results__text">
+                    Încearcă o denumire mai scurtă, un alt nume comercial sau substanța activă a medicamentului.
+                </p>
+            </div>
+        </section>
+    {% endif %}
+
     {% if pharmacy_tabs %}
         <div class="pharmacy-tabs">
             {% for tab in pharmacy_tabs %}
