@@ -27,6 +27,10 @@
   forms.forEach((form) => {
     const input = form.querySelector("input[name='query']");
     if (!input) return;
+    const clearButton = form.querySelector(".search-clear");
+    const clearUrl = form.getAttribute("action") || window.location.pathname || "/";
+    const initialValue = input.defaultValue.trim();
+    const hasQueryInUrl = new URLSearchParams(window.location.search).has("query");
 
     let box = form.querySelector(".suggestions");
     if (!box) {
@@ -34,6 +38,11 @@
       box.className = "suggestions hidden";
       form.appendChild(box);
     }
+
+    const updateClearButton = () => {
+      if (!clearButton) return;
+      clearButton.hidden = input.value.trim().length === 0;
+    };
 
     const close = () => {
       box.classList.add("hidden");
@@ -94,16 +103,36 @@
 
     const debouncedFetch = debounce(fetchSuggestions, 160);
 
-    input.addEventListener("input", debouncedFetch);
+    input.addEventListener("input", () => {
+      updateClearButton();
+      debouncedFetch();
+    });
 
     input.addEventListener("focus", () => {
+      updateClearButton();
       if (input.value.trim().length < 2) fetchSuggestions();
     });
+
+    if (clearButton) {
+      clearButton.addEventListener("click", () => {
+        const currentValue = input.value.trim();
+        if (hasQueryInUrl && initialValue && currentValue === initialValue) {
+          window.location.assign(clearUrl);
+          return;
+        }
+
+        input.value = "";
+        updateClearButton();
+        close();
+        input.focus();
+      });
+    }
 
     box.addEventListener("click", (e) => {
       const btn = e.target.closest("button.suggestion");
       if (!btn) return;
       input.value = btn.dataset.text || "";
+      updateClearButton();
       close();
       form.submit();
     });
@@ -116,5 +145,7 @@
     input.addEventListener("keydown", (e) => {
       if (e.key === "Escape") close();
     });
+
+    updateClearButton();
   });
 })();

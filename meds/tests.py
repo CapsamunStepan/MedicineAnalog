@@ -42,6 +42,7 @@ class SearchViewsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["total_count"], 2)
+        self.assertContains(response, 'class="search-clear"')
 
         titles = {medicine.title for medicine in response.context["page_obj"].object_list}
         self.assertEqual(titles, {"Nurofen Forte", "Ibuprofen Bios"})

@@ -452,6 +452,7 @@ header .search-field {
     flex: 1 1 220px;
     min-width: 0;
     display: block;
+    position: relative;
 }
 
 header .search-form input {
@@ -464,6 +465,7 @@ header .search-form input {
     background: var(--header-input-bg);
     color: var(--header-input-color);
     box-sizing: border-box;
+    padding-right: 50px;
 }
 
 .search-submit {
@@ -535,6 +537,7 @@ header .search-form input {
 .main-mobile-toolbar .search-field {
     flex: 1 1 auto;
     min-width: 0;
+    position: relative;
 }
 
 .main-mobile-toolbar .search-form input {
@@ -547,6 +550,49 @@ header .search-form input {
     background: var(--header-input-bg);
     color: var(--header-input-color);
     box-sizing: border-box;
+    padding-right: 52px;
+}
+
+.search-clear {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    padding: 0;
+    text-decoration: none;
+    color: var(--header-btn-color);
+    background: rgba(255, 255, 255, 0.06);
+    transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+    cursor: pointer;
+}
+
+.search-clear:hover {
+    background: var(--header-btn-hover);
+    color: white;
+}
+
+.search-clear svg {
+    display: block;
+    width: 14px;
+    height: 14px;
+}
+
+.search-clear[hidden] {
+    display: none;
+}
+
+.search-clear:focus,
+.search-clear:visited,
+.search-clear:active {
+    text-decoration: none;
+    color: var(--header-btn-color);
 }
 
 .main-mobile-toolbar .search-submit {
