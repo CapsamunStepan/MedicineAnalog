@@ -1142,6 +1142,15 @@ header .search-form input {
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    text-decoration: none;
+}
+
+.pharmacy-tab,
+.pharmacy-tab:hover,
+.pharmacy-tab:focus,
+.pharmacy-tab:active,
+.pharmacy-tab:visited {
+    text-decoration: none;
 }
 
 .pharmacy-tab:hover {
@@ -1152,7 +1161,7 @@ header .search-form input {
     background: var(--accent-gradient);
     color: white;
     border-color: transparent;
-    box-shadow: 0 4px 12px var(--accent-shadow);
+    box-shadow: none;
 }
 
 .pharmacy-tab .tab-count {
@@ -1214,6 +1223,10 @@ header .search-form input {
     font-weight: 700;
     cursor: pointer;
     transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
 }
 
 .results-pagination__btn:hover:not(:disabled) {
@@ -1227,15 +1240,31 @@ header .search-form input {
     cursor: default;
 }
 
+.results-pagination__btn.is-disabled {
+    opacity: 0.45;
+    cursor: default;
+    pointer-events: none;
+}
+
 .results-pagination__btn.is-active {
     background: var(--accent-gradient);
     color: white;
     border-color: transparent;
-    box-shadow: 0 4px 12px var(--accent-shadow);
+    box-shadow: none;
 }
 
 .results-pagination__btn--nav {
     min-width: 96px;
+    gap: 8px;
+}
+
+.results-pagination__arrow {
+    font-size: 15px;
+    line-height: 1;
+}
+
+.results-pagination__label {
+    line-height: 1;
 }
 
 .results-pagination__ellipsis {
@@ -1411,6 +1440,15 @@ header .search-form input {
 
     .results-pagination__btn--nav {
         min-width: 88px;
+    }
+
+    .results-pagination__label {
+        display: none;
+    }
+
+    .results-pagination__btn--nav {
+        min-width: 38px;
+        padding: 0 10px;
     }
 
     .pharmacy-section h2 {

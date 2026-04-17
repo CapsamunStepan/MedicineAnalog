@@ -1,6 +1,8 @@
+from django.core.paginator import Paginator
 from django.db.models import Count, Min, Q
 from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, render
+
 from .models import Medicine, SearchQuery
 
 
@@ -10,51 +12,104 @@ def _fmt_price(value):
     return f"{float(value):.2f}"
 
 
+def _pagination_items(page_obj):
+    total_pages = page_obj.paginator.num_pages
+    current_page = page_obj.number
+
+    if total_pages <= 7:
+        return list(range(1, total_pages + 1))
+
+    items = [1]
+    start = max(2, current_page - 1)
+    end = min(total_pages - 1, current_page + 1)
+
+    if start > 2:
+        items.append(None)
+
+    items.extend(range(start, end + 1))
+
+    if end < total_pages - 1:
+        items.append(None)
+
+    items.append(total_pages)
+    return items
+
+
 def home(request):
-    query = request.GET.get('query', '')
-    pharmacies = {}
+    query = request.GET.get("query", "")
+    active_pharmacy = (request.GET.get("pharmacy") or "all").strip() or "all"
+    page_number = request.GET.get("page") or "1"
+
     analogs = []
     landing = {}
+    total_count = 0
+    pharmacy_tabs = []
+    page_obj = None
 
     if query:
-        # Persist search history (for landing: recent + top searches)
+        medicines = (
+            Medicine.objects.filter(
+                Q(title__icontains=query) | Q(active_ingredient__icontains=query)
+            )
+            .order_by("price", "id")
+        )
+        total_count = medicines.count()
+
         if not request.session.session_key:
             request.session.create()
 
         query_clean = query.strip()
-        if query_clean:
+        if query_clean and active_pharmacy == "all" and str(page_number) == "1":
             SearchQuery.objects.create(
                 query=query_clean,
                 query_norm=query_clean.lower(),
-                mode=SearchQuery.MODE_TITLE,  # legacy field, search now always covers both sources
+                mode=SearchQuery.MODE_TITLE,
                 session_key=request.session.session_key or "",
             )
 
-        medicines = Medicine.objects.filter(
-            Q(title__icontains=query) | Q(active_ingredient__icontains=query)
-        )
+        if total_count:
+            pharmacy_stats = list(
+                medicines.values("pharmacy")
+                .annotate(count=Count("id"), min_price=Min("price"))
+                .order_by("-count", "min_price", "pharmacy")
+            )
 
-        # Группируем по аптеке
-        for medicine in medicines:
-            pharmacy = medicine.pharmacy
-            if pharmacy not in pharmacies:
-                pharmacies[pharmacy] = []
-            pharmacies[pharmacy].append(medicine)
+            available_pharmacies = {row["pharmacy"] for row in pharmacy_stats}
+            if active_pharmacy != "all" and active_pharmacy not in available_pharmacies:
+                active_pharmacy = "all"
 
-        for pharmacy, medicines_list in pharmacies.items():
-            pharmacies[pharmacy] = sorted(medicines_list, key=lambda x: x.price)
+            pharmacy_tabs = [
+                {
+                    "id": "all",
+                    "label": "Toți",
+                    "count": total_count,
+                    "is_active": active_pharmacy == "all",
+                }
+            ]
+            pharmacy_tabs.extend(
+                {
+                    "id": row["pharmacy"],
+                    "label": row["pharmacy"],
+                    "count": row["count"],
+                    "is_active": row["pharmacy"] == active_pharmacy,
+                }
+                for row in pharmacy_stats
+            )
 
-        # Аналоги (если удалось выделить active_ingredient)
-        ingredients = (
-            medicines.exclude(active_ingredient__isnull=True)
-            .exclude(active_ingredient__exact="")
-            .values("active_ingredient")
-            .annotate(min_price=Min("price"))
-            .order_by("min_price")[:10]
-        )
-        analogs = list(ingredients)
+            active_medicines = (
+                medicines if active_pharmacy == "all" else medicines.filter(pharmacy=active_pharmacy)
+            )
+            page_obj = Paginator(active_medicines, 10).get_page(page_number)
+
+            ingredients = (
+                medicines.exclude(active_ingredient__isnull=True)
+                .exclude(active_ingredient__exact="")
+                .values("active_ingredient")
+                .annotate(min_price=Min("price"))
+                .order_by("min_price")[:10]
+            )
+            analogs = list(ingredients)
     else:
-        # Landing content when user hasn't searched yet
         total_medicines = Medicine.objects.count()
         total_pharmacies = Medicine.objects.values("pharmacy").distinct().count()
         popular_ingredients = list(
@@ -80,21 +135,18 @@ def home(request):
             "substance_count": substance_count,
         }
 
-    all_medicines = sorted(
-        [m for meds in pharmacies.values() for m in meds],
-        key=lambda x: x.price,
-    )
-
     return render(
         request,
-        'meds/home.html',
+        "meds/home.html",
         {
-            'pharmacies': pharmacies,
-            'query': query,
-            'analogs': analogs,
-            'landing': landing,
-            'total_count': len(all_medicines),
-            'all_medicines': all_medicines,
+            "query": query,
+            "active_pharmacy": active_pharmacy,
+            "page_obj": page_obj,
+            "pagination_items": _pagination_items(page_obj) if page_obj else [],
+            "pharmacy_tabs": pharmacy_tabs,
+            "analogs": analogs,
+            "landing": landing,
+            "total_count": total_count,
         },
     )
 
@@ -220,11 +272,11 @@ def suggest(request):
 
     seen = set()
     deduped = []
-    for s in suggestions:
-        key = (s.get("text") or "").strip().lower()
+    for suggestion in suggestions:
+        key = (suggestion.get("text") or "").strip().lower()
         if not key or key in seen:
             continue
         seen.add(key)
-        deduped.append(s)
+        deduped.append(suggestion)
 
     return JsonResponse({"suggestions": deduped[:10]})

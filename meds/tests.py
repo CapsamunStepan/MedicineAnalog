@@ -43,7 +43,7 @@ class SearchViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["total_count"], 2)
 
-        titles = {medicine.title for medicine in response.context["all_medicines"]}
+        titles = {medicine.title for medicine in response.context["page_obj"].object_list}
         self.assertEqual(titles, {"Nurofen Forte", "Ibuprofen Bios"})
 
     def test_suggest_returns_title_and_ingredient_matches(self):
@@ -78,8 +78,28 @@ class SearchViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "/static/meds/img/medicine-placeholder.svg")
 
-    def test_home_search_renders_pagination_hook(self):
-        response = self.client.get(reverse("home"), {"query": "paracetamol"})
+    def test_home_search_paginates_results_server_side(self):
+        for idx in range(12):
+            Medicine.objects.create(
+                title=f"Paracetamol extra {idx}",
+                active_ingredient="Paracetamol",
+                price=Decimal("10.00") + Decimal(idx),
+                link=f"https://example.com/paracetamol-{idx}",
+                img="",
+                manufacturer="Extra Pharma",
+                pharmacy="FarmaciaFamiliei" if idx < 8 else "Hippocrates",
+            )
 
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'class="results-pagination" data-page-size="10"')
+        first_page = self.client.get(reverse("home"), {"query": "paracetamol"})
+        second_page = self.client.get(reverse("home"), {"query": "paracetamol", "page": 2})
+
+        self.assertEqual(first_page.status_code, 200)
+        self.assertEqual(first_page.context["page_obj"].paginator.per_page, 10)
+        self.assertEqual(len(first_page.context["page_obj"].object_list), 10)
+        self.assertContains(first_page, 'class="medicine-card"', count=10)
+        self.assertContains(first_page, "Inainte")
+
+        self.assertEqual(second_page.status_code, 200)
+        self.assertEqual(second_page.context["page_obj"].number, 2)
+        self.assertEqual(len(second_page.context["page_obj"].object_list), 3)
+        self.assertContains(second_page, "Inapoi")
