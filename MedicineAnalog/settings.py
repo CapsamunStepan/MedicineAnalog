@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,6 +27,22 @@ SECRET_KEY = 'django-insecure-7)mgb0bygo&$f)^y6^vd#u01s50e@-f4)3g13flawqi$ymyxtp
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+
+
+def _env_list(name):
+    value = os.getenv(name, "")
+    return [item.strip() for item in value.split(",") if item.strip()]
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost",
+    "http://127.0.0.1",
+    "https://*.ngrok-free.dev",
+    "https://*.ngrok-free.app",
+    "https://*.ngrok.app",
+    "https://*.ngrok.io",
+    *_env_list("CSRF_TRUSTED_ORIGINS"),
+]
 
 
 # Application definition

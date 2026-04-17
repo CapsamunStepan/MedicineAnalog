@@ -1,9 +1,9 @@
 from decimal import Decimal
 
-from django.test import TestCase
+from django.test import Client, TestCase
 from django.urls import reverse
 
-from .models import Medicine
+from .models import Medicine, SearchQuery
 
 
 class SearchViewsTestCase(TestCase):
@@ -37,6 +37,12 @@ class SearchViewsTestCase(TestCase):
             pharmacy="FarmaciaFamiliei",
         )
 
+    def _ensure_session_key(self):
+        session = self.client.session
+        session["history_seed"] = "1"
+        session.save()
+        return session.session_key
+
     def test_home_search_matches_title_and_active_ingredient(self):
         response = self.client.get(reverse("home"), {"query": "ibuprofen"})
 
@@ -60,6 +66,76 @@ class SearchViewsTestCase(TestCase):
         self.assertIn("Ibuprofen Bios", suggestion_texts)
         self.assertIn("ingredient", suggestion_kinds)
         self.assertIn("title", suggestion_kinds)
+
+    def test_suggest_recent_history_can_delete_single_item(self):
+        session_key = self._ensure_session_key()
+        SearchQuery.objects.create(
+            query="paracetamol",
+            query_norm="paracetamol",
+            session_key=session_key,
+        )
+        SearchQuery.objects.create(
+            query="vitamin c",
+            query_norm="vitamin c",
+            session_key=session_key,
+        )
+
+        response = self.client.post(reverse("delete_search_history_item"), {"query": "paracetamol"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(
+            SearchQuery.objects.filter(session_key=session_key, query_norm="paracetamol").exists()
+        )
+        self.assertTrue(
+            SearchQuery.objects.filter(session_key=session_key, query_norm="vitamin c").exists()
+        )
+        self.assertEqual(response.json()["suggestions"], [{"text": "vitamin c", "kind": "recent"}])
+
+    def test_suggest_recent_history_can_be_cleared(self):
+        session_key = self._ensure_session_key()
+        SearchQuery.objects.create(
+            query="paracetamol",
+            query_norm="paracetamol",
+            session_key=session_key,
+        )
+        SearchQuery.objects.create(
+            query="vitamin c",
+            query_norm="vitamin c",
+            session_key=session_key,
+        )
+
+        response = self.client.post(reverse("clear_search_history"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(SearchQuery.objects.filter(session_key=session_key).exists())
+        self.assertEqual(response.json()["suggestions"], [])
+
+    def test_delete_history_endpoint_accepts_post_with_csrf_cookie_from_page(self):
+        csrf_client = Client(enforce_csrf_checks=True)
+        page_response = csrf_client.get(reverse("home"))
+        csrf_token = page_response.cookies["csrftoken"].value
+
+        session = csrf_client.session
+        session["history_seed"] = "1"
+        session.save()
+        session_key = session.session_key
+
+        SearchQuery.objects.create(
+            query="paracetamol",
+            query_norm="paracetamol",
+            session_key=session_key,
+        )
+
+        response = csrf_client.post(
+            reverse("delete_search_history_item"),
+            {"query": "paracetamol"},
+            HTTP_X_CSRFTOKEN=csrf_token,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(
+            SearchQuery.objects.filter(session_key=session_key, query_norm="paracetamol").exists()
+        )
 
     def test_medicine_detail_page_renders(self):
         response = self.client.get(reverse("medicine_detail", args=[self.primary_medicine.id]))

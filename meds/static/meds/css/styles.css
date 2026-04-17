@@ -730,10 +730,55 @@ header .search-form input {
     display: none;
 }
 
+.suggestions-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px 10px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.suggestions-title {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.suggestions-clear-all {
+    border: none;
+    background: transparent;
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+}
+
+.suggestions-clear-all:hover {
+    color: var(--accent-dark);
+}
+
+.suggestion-row {
+    display: flex;
+    align-items: stretch;
+    background: var(--surface);
+}
+
+.suggestion-row--recent {
+    border-top: 1px solid var(--border-light);
+}
+
+.suggestions-header + .suggestion-row--recent {
+    border-top: none;
+}
+
 .suggestion {
     width: 100%;
     display: flex;
-    justify-content: space-between;
     align-items: center;
     gap: 12px;
     padding: 12px 14px;
@@ -745,6 +790,13 @@ header .search-form input {
 
 .suggestion:hover {
     background: var(--surface-hover);
+}
+
+.suggestion-copy {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .suggestion-text {
@@ -760,16 +812,30 @@ header .search-form input {
 }
 
 .suggestion--recent {
-    border-top: 1px solid var(--border-light);
+    flex: 1 1 auto;
 }
 
-.suggestion--recent:first-child {
-    border-top: none;
+.suggestion-remove {
+    flex: 0 0 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: var(--surface);
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0 12px;
 }
 
-.suggestion-icon {
-    font-size: 14px;
-    opacity: 0.6;
+.suggestion-remove:hover {
+    background: var(--surface-hover);
+    color: var(--text-heading);
+}
+
+.suggestion-remove svg {
+    width: 14px;
+    height: 14px;
+    display: block;
 }
 
 /* ===== How it works (cards also used inside .hero-how) ===== */

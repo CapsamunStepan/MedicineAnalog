@@ -2,6 +2,8 @@ from django.core.paginator import Paginator
 from django.db.models import Count, Min, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.http import require_POST
 
 from .models import Medicine, SearchQuery
 
@@ -10,6 +12,27 @@ def _fmt_price(value):
     if value is None:
         return ""
     return f"{float(value):.2f}"
+
+
+def _recent_search_suggestions(session_key, limit=6):
+    if not session_key:
+        return []
+
+    recents = []
+    seen = set()
+    recent_rows = (
+        SearchQuery.objects.filter(session_key=session_key).order_by("-created_at").values("query")[:20]
+    )
+    for row in recent_rows:
+        query = (row["query"] or "").strip()
+        key = query.lower()
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        recents.append({"text": query, "kind": "recent"})
+        if len(recents) >= limit:
+            break
+    return recents
 
 
 def _pagination_items(page_obj):
@@ -35,6 +58,7 @@ def _pagination_items(page_obj):
     return items
 
 
+@ensure_csrf_cookie
 def home(request):
     query = request.GET.get("query", "")
     active_pharmacy = (request.GET.get("pharmacy") or "all").strip() or "all"
@@ -151,6 +175,7 @@ def home(request):
     )
 
 
+@ensure_csrf_cookie
 def medicine_detail(request, medicine_id: int):
     medicine = get_object_or_404(Medicine, id=medicine_id)
 
@@ -193,6 +218,7 @@ def medicine_detail(request, medicine_id: int):
     )
 
 
+@ensure_csrf_cookie
 def analogs(request):
     ingredient = request.GET.get("ingredient", "").strip()
     results = []
@@ -215,24 +241,7 @@ def suggest(request):
         if not request.session.session_key:
             request.session.create()
         session_key = request.session.session_key or ""
-
-        recents = []
-        seen = set()
-        if session_key:
-            for row in (
-                SearchQuery.objects.filter(session_key=session_key)
-                .order_by("-created_at")
-                .values("query")[:20]
-            ):
-                key = row["query"].strip().lower()
-                if key in seen:
-                    continue
-                seen.add(key)
-                recents.append({"text": row["query"], "kind": "recent"})
-                if len(recents) >= 6:
-                    break
-
-        return JsonResponse({"suggestions": recents})
+        return JsonResponse({"suggestions": _recent_search_suggestions(session_key)})
 
     suggestions = []
 
@@ -280,3 +289,24 @@ def suggest(request):
         deduped.append(suggestion)
 
     return JsonResponse({"suggestions": deduped[:10]})
+
+
+@require_POST
+def delete_search_history_item(request):
+    session_key = request.session.session_key or ""
+    query = (request.POST.get("query") or "").strip()
+
+    if session_key and query:
+        SearchQuery.objects.filter(session_key=session_key, query_norm=query.lower()).delete()
+
+    return JsonResponse({"suggestions": _recent_search_suggestions(session_key)})
+
+
+@require_POST
+def clear_search_history(request):
+    session_key = request.session.session_key or ""
+
+    if session_key:
+        SearchQuery.objects.filter(session_key=session_key).delete()
+
+    return JsonResponse({"suggestions": []})
