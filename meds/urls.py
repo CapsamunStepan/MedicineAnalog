@@ -8,5 +8,6 @@ urlpatterns = [
     path('suggest/', views.suggest, name='suggest'),
     path('search-history/delete/', views.delete_search_history_item, name='delete_search_history_item'),
     path('search-history/clear/', views.clear_search_history, name='clear_search_history'),
+    path('set-language/', views.set_language, name='set_language'),
 
 ]

@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="{{ current_language }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,23 +21,29 @@
             <span class="logo-short" aria-hidden="true">M</span>
         </a>
     </div>
-    <form method="GET" action="/" class="search-form">
+    <form method="GET"
+          action="/"
+          class="search-form"
+          data-history-title="{{ ui.recent_history }}"
+          data-clear-history="{{ ui.clear_all }}"
+          data-remove-history="{{ ui.remove_from_history }}"
+          data-from-label="{{ ui.from_label }}">
         <label class="search-field">
-            <input type="text" name="query" placeholder="Introdu numele medicamentului..." required autocomplete="off">
-            <button type="button" class="search-clear" aria-label="Curăță căutarea" title="Curăță căutarea" hidden>
+            <input type="text" name="query" placeholder="{{ ui.search_placeholder }}" required autocomplete="off">
+            <button type="button" class="search-clear" aria-label="{{ ui.clear_search }}" title="{{ ui.clear_search }}" hidden>
                 <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false">
                     <path d="M3.5 3.5l9 9m0-9l-9 9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/>
                 </svg>
             </button>
         </label>
-        <button type="submit" class="search-submit" aria-label="Caută" title="Caută">
-            <span class="search-submit-text">Caută</span>
+        <button type="submit" class="search-submit" aria-label="{{ ui.search_button }}" title="{{ ui.search_button }}">
+            <span class="search-submit-text">{{ ui.search_button }}</span>
             <svg class="search-submit-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
                 <path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
             </svg>
         </button>
     </form>
-    <button type="button" class="theme-toggle" title="Сменить тему"></button>
+    {% include "meds/_header_controls.html" %}
 </header>
 
 <main class="detail-container">
@@ -52,16 +58,16 @@
 
                 <div class="detail-meta">
                     <div class="detail-meta-row">
-                        <span class="detail-meta-label">Farmacie</span>
+                        <span class="detail-meta-label">{{ ui.pharmacy_label }}</span>
                         <span class="detail-meta-value">{{ medicine.pharmacy }}</span>
                     </div>
                     <div class="detail-meta-row">
-                        <span class="detail-meta-label">Producător</span>
+                        <span class="detail-meta-label">{{ ui.producer_label }}</span>
                         <span class="detail-meta-value">{{ medicine.manufacturer }}</span>
                     </div>
                     {% if medicine.active_ingredient %}
                     <div class="detail-meta-row">
-                        <span class="detail-meta-label">Substanță activă</span>
+                        <span class="detail-meta-label">{{ ui.active_ingredient_label }}</span>
                         <span class="detail-meta-value">
                             <a href="{% url 'analogs' %}?ingredient={{ medicine.active_ingredient|urlencode }}">
                                 {{ medicine.active_ingredient }}
@@ -75,30 +81,28 @@
 
                 <div class="detail-actions">
                     <a class="btn" href="{{ medicine.link }}" target="_blank" rel="noopener noreferrer">
-                        Deschide în farmacie
+                        {{ ui.open_in_pharmacy }}
                     </a>
                     <a class="btn secondary" href="javascript:history.back()">
-                        Înapoi la căutare
+                        {{ ui.back_to_search }}
                     </a>
                 </div>
 
-                <p class="detail-disclaimer">
-                    Consultați un medic sau un farmacist înainte de utilizarea oricărui medicament.
-                </p>
+                <p class="detail-disclaimer">{{ ui.detail_disclaimer }}</p>
             </div>
         </div>
     </section>
 
     {% if price_compare %}
     <section class="detail-card">
-        <h2 class="detail-subtitle">Comparare prețuri (după substanță)</h2>
+        <h2 class="detail-subtitle">{{ ui.price_compare_title }}</h2>
         <div class="price-compare">
             {% for row in price_compare %}
             <div class="price-row">
                 <div class="price-pharmacy">{{ row.pharmacy }}</div>
                 <div class="price-value">{{ row.min_price|floatformat:2 }} MDL</div>
                 <div class="price-link">
-                    <a href="{{ row.link }}" target="_blank" rel="noopener noreferrer">link</a>
+                    <a href="{{ row.link }}" target="_blank" rel="noopener noreferrer">{{ ui.link_label }}</a>
                 </div>
             </div>
             {% endfor %}
@@ -108,7 +112,7 @@
 
     {% if cheap_analogs %}
     <section class="analogs-section">
-        <h2 class="analogs-heading">Analogi mai ieftini</h2>
+        <h2 class="analogs-heading">{{ ui.cheaper_analogs }}</h2>
         <div class="analogs-grid">
             {% for analog in cheap_analogs %}
             <a href="{% url 'medicine_detail' analog.id %}" class="analog-card">
@@ -131,6 +135,7 @@
 </main>
 
 <script src="{% static 'meds/js/theme.js' %}"></script>
+<script src="{% static 'meds/js/language_dialog.js' %}"></script>
 <script src="{% static 'meds/js/search_suggest.js' %}"></script>
 </body>
 </html>

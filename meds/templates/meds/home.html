@@ -1,10 +1,10 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="{{ current_language }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Căutare medicamente</title>
+    <title>{{ ui.home_page_title }}</title>
     <link rel="icon" href="{% static 'meds/favicon.svg' %}" type="image/svg+xml">
     <link rel="stylesheet" href="{% static 'meds/css/styles.css' %}">
     <script>
@@ -22,23 +22,28 @@
             <span class="logo-short" aria-hidden="true">M</span>
         </a>
     </div>
-    <form method="GET" class="search-form">
+    <form method="GET"
+          class="search-form"
+          data-history-title="{{ ui.recent_history }}"
+          data-clear-history="{{ ui.clear_all }}"
+          data-remove-history="{{ ui.remove_from_history }}"
+          data-from-label="{{ ui.from_label }}">
         <label class="search-field">
-            <input type="text" name="query" value="{{ query }}" placeholder="Introdu numele medicamentului..." required autocomplete="off">
-            <button type="button" class="search-clear" aria-label="Curăță căutarea" title="Curăță căutarea" hidden>
+            <input type="text" name="query" value="{{ query }}" placeholder="{{ ui.search_placeholder }}" required autocomplete="off">
+            <button type="button" class="search-clear" aria-label="{{ ui.clear_search }}" title="{{ ui.clear_search }}" hidden>
                 <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false">
                     <path d="M3.5 3.5l9 9m0-9l-9 9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/>
                 </svg>
             </button>
         </label>
-        <button type="submit" class="search-submit" aria-label="Caută" title="Caută">
-            <span class="search-submit-text">Caută</span>
+        <button type="submit" class="search-submit" aria-label="{{ ui.search_button }}" title="{{ ui.search_button }}">
+            <span class="search-submit-text">{{ ui.search_button }}</span>
             <svg class="search-submit-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
                 <path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
             </svg>
         </button>
     </form>
-    <button type="button" class="theme-toggle" title="Сменить тему"></button>
+    {% include "meds/_header_controls.html" %}
 </header>
 
 <main>
@@ -48,52 +53,50 @@
             <div class="hero-content">
                 <div class="hero-top">
                     <div class="hero-intro">
-                        <h1>Căutare medicamente și analogi</h1>
-                        <p class="hero-subtitle">
-                            Compară prețurile între farmacii și găsește analogi după substanța activă.
-                        </p>
+                        <h1>{{ ui.hero_title }}</h1>
+                        <p class="hero-subtitle">{{ ui.hero_subtitle }}</p>
 
                         {% if landing.total_medicines %}
                             <div class="hero-stats">
                                 <div class="stat">
                                     <div class="stat-value">{{ landing.total_medicines }}</div>
-                                    <div class="stat-label">produse în bază</div>
+                                    <div class="stat-label">{{ ui.products_in_db }}</div>
                                 </div>
                                 <div class="stat">
                                     <div class="stat-value">{{ landing.total_pharmacies }}</div>
-                                    <div class="stat-label">farmacii</div>
+                                    <div class="stat-label">{{ ui.pharmacies }}</div>
                                 </div>
                             </div>
                         {% endif %}
                     </div>
 
-                    <aside class="hero-aside" aria-label="Statistici rapide">
+                    <aside class="hero-aside" aria-label="{{ ui.quick_stats_aria }}">
                         <div class="hero-spotlight">
                             <div class="hero-visual" aria-hidden="true">
                                 <span class="hero-blob hero-blob--a"></span>
                                 <span class="hero-blob hero-blob--b"></span>
                                 <span class="hero-blob hero-blob--c"></span>
                             </div>
-                            <p class="hero-spotlight-kicker">La un clic distanță</p>
-                            <h3 class="hero-spotlight-title">Tot ce e în baza noastră</h3>
+                            <p class="hero-spotlight-kicker">{{ ui.spotlight_kicker }}</p>
+                            <h3 class="hero-spotlight-title">{{ ui.spotlight_title }}</h3>
                             <ul class="hero-facts">
                                 <li>
                                     <span class="hero-fact-ico" aria-hidden="true">✨</span>
-                                    <span>Actualizăm datele despre prețuri și produse, ca să ai mereu <strong class="hero-fact-strong">informații actuale</strong>.</span>
+                                    <span>{{ ui.fact_update }}</span>
                                 </li>
                                 {% if landing.substance_count %}
                                 <li>
                                     <span class="hero-fact-ico" aria-hidden="true">🧬</span>
-                                    <span><strong class="hero-fact-strong">{{ landing.substance_count }}</strong> substanțe active diferite</span>
+                                    <span><strong class="hero-fact-strong">{{ landing.substance_count }}</strong> {{ ui.distinct_active_substances }}</span>
                                 </li>
                                 {% endif %}
                                 <li>
                                     <span class="hero-fact-ico" aria-hidden="true">⚡</span>
-                                    <span>Rezultate grupate pe farmacie — alegi tu unde cumperi</span>
+                                    <span>{{ ui.fact_grouped_results }}</span>
                                 </li>
                                 <li>
                                     <span class="hero-fact-ico" aria-hidden="true">🔒</span>
-                                    <span>Fără cont: doar caută și compară</span>
+                                    <span>{{ ui.fact_no_account }}</span>
                                 </li>
                             </ul>
                         </div>
@@ -101,19 +104,19 @@
                 </div>
 
                 <div class="hero-how">
-                    <h2 class="hero-how-heading">Cum funcționează</h2>
+                    <h2 class="hero-how-heading">{{ ui.how_it_works }}</h2>
                     <div class="how-grid hero-how-grid">
                         <div class="how-card">
-                            <div class="how-title">1) Caută</div>
-                            <div class="how-text">Introdu denumirea sau substanța activă.</div>
+                            <div class="how-title">{{ ui.step_search_title }}</div>
+                            <div class="how-text">{{ ui.step_search_text }}</div>
                         </div>
                         <div class="how-card">
-                            <div class="how-title">2) Compară</div>
-                            <div class="how-text">Vezi rezultatele pe farmacii și prețurile.</div>
+                            <div class="how-title">{{ ui.step_compare_title }}</div>
+                            <div class="how-text">{{ ui.step_compare_text }}</div>
                         </div>
                         <div class="how-card">
-                            <div class="how-title">3) Alege analogi</div>
-                            <div class="how-text">Deschide produsul și navighează după substanță.</div>
+                            <div class="how-title">{{ ui.step_choose_title }}</div>
+                            <div class="how-text">{{ ui.step_choose_text }}</div>
                         </div>
                     </div>
                 </div>
@@ -123,12 +126,12 @@
         {% if landing.popular_ingredients %}
         <section class="landing-section-wrap">
             <div class="landing-inner">
-                <h2 class="landing-heading">Substanțe populare</h2>
+                <h2 class="landing-heading">{{ ui.popular_ingredients }}</h2>
                 <div class="ingredient-grid">
                     {% for p in landing.popular_ingredients %}
                     <a class="ingredient-card" href="/?query={{ p.active_ingredient|urlencode }}">
                         <span class="ingredient-name">{{ p.active_ingredient }}</span>
-                        <span class="ingredient-meta">{{ p.cnt }} produse · de la {{ p.min_price|floatformat:2 }} MDL</span>
+                        <span class="ingredient-meta">{{ p.cnt }} {{ ui.products_label }} &middot; {{ ui.from_label }} {{ p.min_price|floatformat:2 }} MDL</span>
                     </a>
                     {% endfor %}
                 </div>
@@ -139,11 +142,11 @@
 
     {% if analogs %}
         <section class="pharmacy-section">
-            <h2>Analogi (după substanța activă)</h2>
+            <h2>{{ ui.analogs_by_ingredient }}</h2>
             <div class="analog-chips">
                 {% for a in analogs %}
                     <a class="chip" href="{% url 'analogs' %}?ingredient={{ a.active_ingredient|urlencode }}">
-                        {{ a.active_ingredient }} · de la {{ a.min_price|floatformat:2 }} MDL
+                        {{ a.active_ingredient }} &middot; {{ ui.from_label }} {{ a.min_price|floatformat:2 }} MDL
                     </a>
                 {% endfor %}
             </div>
@@ -153,11 +156,9 @@
     {% if query and not pharmacy_tabs %}
         <section class="empty-results">
             <div class="empty-results__card">
-                <p class="empty-results__kicker">Niciun rezultat</p>
-                <h2 class="empty-results__title">Nu am găsit nimic pentru „{{ query }}”</h2>
-                <p class="empty-results__text">
-                    Încearcă o denumire mai scurtă, un alt nume comercial sau substanța activă a medicamentului.
-                </p>
+                <p class="empty-results__kicker">{{ ui.no_results_kicker }}</p>
+                <h2 class="empty-results__title">{{ ui.no_results_for }} &bdquo;{{ query }}&rdquo;</h2>
+                <p class="empty-results__text">{{ ui.no_results_text }}</p>
             </div>
         </section>
     {% endif %}
@@ -180,9 +181,9 @@
                         {% include "meds/_medicine_image.html" with image_url=medicine.img title=medicine.title %}
                         <div class="medicine-info">
                             <h3>{{ medicine.title }}</h3>
-                            <p>Producător: {{ medicine.manufacturer }}</p>
+                            <p>{{ ui.producer_label }}: {{ medicine.manufacturer }}</p>
                             {% if medicine.active_ingredient %}
-                                <p>Substanță: {{ medicine.active_ingredient }}</p>
+                                <p>{{ ui.ingredient_label }}: {{ medicine.active_ingredient }}</p>
                             {% endif %}
                             <div class="price-row-card">
                                 <p class="price">{{ medicine.price|floatformat:2 }} MDL</p>
@@ -194,18 +195,18 @@
             </div>
 
             {% if page_obj.paginator.num_pages > 1 %}
-                <nav class="results-pagination" aria-label="Paginare rezultate">
+                <nav class="results-pagination" aria-label="{{ ui.pagination_label }}">
                     {% if page_obj.has_previous %}
                         <a class="results-pagination__btn results-pagination__btn--nav"
                            href="/?query={{ query|urlencode }}&pharmacy={{ active_pharmacy|urlencode }}&page={{ page_obj.previous_page_number }}"
-                           aria-label="Inapoi">
+                           aria-label="{{ ui.back_label }}">
                             <span class="results-pagination__arrow" aria-hidden="true">&larr;</span>
-                            <span class="results-pagination__label">Inapoi</span>
+                            <span class="results-pagination__label">{{ ui.back_label }}</span>
                         </a>
                     {% else %}
-                        <span class="results-pagination__btn results-pagination__btn--nav is-disabled" aria-label="Inapoi">
+                        <span class="results-pagination__btn results-pagination__btn--nav is-disabled" aria-label="{{ ui.back_label }}">
                             <span class="results-pagination__arrow" aria-hidden="true">&larr;</span>
-                            <span class="results-pagination__label">Inapoi</span>
+                            <span class="results-pagination__label">{{ ui.back_label }}</span>
                         </span>
                     {% endif %}
 
@@ -229,13 +230,13 @@
                     {% if page_obj.has_next %}
                         <a class="results-pagination__btn results-pagination__btn--nav"
                            href="/?query={{ query|urlencode }}&pharmacy={{ active_pharmacy|urlencode }}&page={{ page_obj.next_page_number }}"
-                           aria-label="Inainte">
-                            <span class="results-pagination__label">Inainte</span>
+                           aria-label="{{ ui.next_label }}">
+                            <span class="results-pagination__label">{{ ui.next_label }}</span>
                             <span class="results-pagination__arrow" aria-hidden="true">&rarr;</span>
                         </a>
                     {% else %}
-                        <span class="results-pagination__btn results-pagination__btn--nav is-disabled" aria-label="Inainte">
-                            <span class="results-pagination__label">Inainte</span>
+                        <span class="results-pagination__btn results-pagination__btn--nav is-disabled" aria-label="{{ ui.next_label }}">
+                            <span class="results-pagination__label">{{ ui.next_label }}</span>
                             <span class="results-pagination__arrow" aria-hidden="true">&rarr;</span>
                         </span>
                     {% endif %}
@@ -246,6 +247,7 @@
 </main>
 
 <script src="{% static 'meds/js/theme.js' %}"></script>
+<script src="{% static 'meds/js/language_dialog.js' %}"></script>
 <script src="{% static 'meds/js/search_suggest.js' %}"></script>
 </body>
 </html>

@@ -1,16 +1,22 @@
 <div class="main-mobile-toolbar-shell">
     <div class="main-mobile-toolbar">
-        <form method="GET" action="{{ search_action|default:'/' }}" class="search-form">
+        <form method="GET"
+              action="{{ search_action|default:'/' }}"
+              class="search-form"
+              data-history-title="{{ ui.recent_history }}"
+              data-clear-history="{{ ui.clear_all }}"
+              data-remove-history="{{ ui.remove_from_history }}"
+              data-from-label="{{ ui.from_label }}">
             <label class="search-field">
-                <input type="text" name="query" value="{{ query|default:'' }}" placeholder="Introdu numele medicamentului..." required autocomplete="off">
-                <button type="button" class="search-clear" aria-label="Curăță căutarea" title="Curăță căutarea" hidden>
+                <input type="text" name="query" value="{{ query|default:'' }}" placeholder="{{ ui.search_placeholder }}" required autocomplete="off">
+                <button type="button" class="search-clear" aria-label="{{ ui.clear_search }}" title="{{ ui.clear_search }}" hidden>
                     <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false">
                         <path d="M3.5 3.5l9 9m0-9l-9 9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/>
                     </svg>
                 </button>
             </label>
-            <button type="submit" class="search-submit" aria-label="Caută" title="Caută">
-                <span class="search-submit-text">Caută</span>
+            <button type="submit" class="search-submit" aria-label="{{ ui.search_button }}" title="{{ ui.search_button }}">
+                <span class="search-submit-text">{{ ui.search_button }}</span>
                 <svg class="search-submit-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
                     <path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
                 </svg>

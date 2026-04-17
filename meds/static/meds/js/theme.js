@@ -2,7 +2,6 @@
   const STORAGE_KEY = "ma-theme";
   const CYCLE = ["light", "dark", "system"];
   const ICONS = { light: "\u2600\uFE0F", dark: "\uD83C\uDF19", system: "\uD83D\uDCBB" };
-  const TITLES = { light: "Светлая тема", dark: "Тёмная тема", system: "Как в системе" };
 
   function getPreferred() {
     return localStorage.getItem(STORAGE_KEY) || "system";
@@ -15,12 +14,22 @@
     return mode;
   }
 
+  function getTitles(button) {
+    return {
+      light: button.dataset.titleLight || "Light theme",
+      dark: button.dataset.titleDark || "Dark theme",
+      system: button.dataset.titleSystem || "Use system theme",
+    };
+  }
+
   function apply(mode) {
     document.documentElement.setAttribute("data-theme", resolveTheme(mode));
-    document.querySelectorAll(".theme-toggle").forEach((btn) => {
-      btn.innerHTML = ICONS[mode];
-      btn.title = TITLES[mode];
-      btn.dataset.mode = mode;
+    document.querySelectorAll(".theme-toggle").forEach((button) => {
+      const titles = getTitles(button);
+      button.innerHTML = ICONS[mode];
+      button.title = titles[mode];
+      button.setAttribute("aria-label", titles[mode]);
+      button.dataset.mode = mode;
     });
   }
 
@@ -30,9 +39,9 @@
     if (getPreferred() === "system") apply("system");
   });
 
-  document.addEventListener("click", (e) => {
-    const btn = e.target.closest(".theme-toggle");
-    if (!btn) return;
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest(".theme-toggle");
+    if (!button) return;
     const current = getPreferred();
     const next = CYCLE[(CYCLE.indexOf(current) + 1) % CYCLE.length];
     localStorage.setItem(STORAGE_KEY, next);

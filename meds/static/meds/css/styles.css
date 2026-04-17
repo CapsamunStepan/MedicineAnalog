@@ -395,7 +395,8 @@ body {
     background: var(--header-bg);
     color: white;
     padding: 14px clamp(12px, 3vw, 32px);
-    display: flex;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     gap: clamp(10px, 2vw, 20px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -439,13 +440,14 @@ body {
 }
 
 header .search-form {
-    flex: 1 1 auto;
     min-width: 0;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 10px;
     position: relative;
+    width: min(100%, 833px);
+    justify-self: center;
 }
 
 header .search-field {
@@ -497,10 +499,111 @@ header .search-form input {
     display: inline;
 }
 
+.header-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    justify-self: end;
+    flex-shrink: 0;
+}
+
+.language-trigger {
+    min-width: 112px;
+    height: 40px;
+    padding: 0 14px 0 16px;
+    border: none;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.language-trigger:hover {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+.language-trigger__label {
+    white-space: nowrap;
+}
+
+.language-trigger__chevron {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.language-dialog {
+    position: fixed;
+    border: none;
+    padding: 0;
+    margin: 0;
+    width: min(220px, calc(100vw - 24px));
+    border-radius: 16px;
+    background: var(--surface);
+    color: var(--text-heading);
+    box-shadow: var(--shadow-dropdown);
+    overflow: hidden;
+    inset: auto auto auto auto;
+}
+
+.language-dialog::backdrop {
+    background: transparent;
+}
+
+.language-dialog__content {
+    padding: 8px;
+}
+
+.language-dialog__form {
+    display: grid;
+    gap: 4px;
+}
+
+.language-dialog__option {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border: none;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--text-heading);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.language-dialog__option-label {
+    text-align: left;
+}
+
+.language-dialog__option:hover {
+    background: var(--surface-hover);
+}
+
+.language-dialog__option.is-active {
+    background: var(--surface-hover);
+    color: var(--text-heading);
+}
+
+.language-dialog__check {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--accent);
+}
+
 /* ===== Theme toggle ===== */
 .theme-toggle {
     flex-shrink: 0;
-    margin-left: 0;
     background: rgba(255, 255, 255, 0.12);
     border: none;
     border-radius: 999px;
@@ -612,9 +715,7 @@ header .search-form input {
 
 @media (min-width: 961px) {
     header .search-form {
-        flex: 0 1 833px;
         width: min(100%, 833px);
-        margin: 0 auto;
     }
 
     header .search-form input {
@@ -626,8 +727,8 @@ header .search-form input {
         padding: 12px 24px;
     }
 
-    .theme-toggle {
-        margin-left: auto;
+    .header-controls {
+        gap: 12px;
     }
 }
 
@@ -646,6 +747,18 @@ header .search-form input {
         min-width: 0;
     }
 
+    .header-controls {
+        gap: 8px;
+    }
+
+    .language-trigger {
+        min-width: 96px;
+        height: 36px;
+        padding: 0 12px 0 14px;
+        font-size: 12px;
+        gap: 8px;
+    }
+
     .logo-full {
         display: inline;
     }
@@ -656,10 +769,6 @@ header .search-form input {
 
     header .search-form {
         display: none;
-    }
-
-    .theme-toggle {
-        margin-left: auto;
     }
 
     .main-mobile-toolbar-shell {

@@ -72,6 +72,10 @@
     if (!input) return;
 
     const clearButton = form.querySelector(".search-clear");
+    const historyTitle = form.dataset.historyTitle || "Recent history";
+    const clearHistoryLabel = form.dataset.clearHistory || "Clear all";
+    const removeHistoryLabel = form.dataset.removeHistory || "Remove from history";
+    const fromLabel = form.dataset.fromLabel || "from";
 
     let activeRequestController = null;
     let requestToken = 0;
@@ -114,9 +118,9 @@
       const headerHtml = allAreRecent
         ? `
             <div class="suggestions-header">
-              <span class="suggestions-title">Istoric recent</span>
+              <span class="suggestions-title">${escapeHtml(historyTitle)}</span>
               <button type="button" class="suggestions-clear-all" data-action="clear-history">
-                Sterge tot
+                ${escapeHtml(clearHistoryLabel)}
               </button>
             </div>
           `
@@ -126,7 +130,7 @@
         .map((item, index) => {
           const meta = [];
           if (item.count) meta.push(`${item.count}x`);
-          if (item.min_price) meta.push(`de la ${formatPrice(item.min_price)} MDL`);
+          if (item.min_price) meta.push(`${fromLabel} ${formatPrice(item.min_price)} MDL`);
           const metaHtml = meta.length
             ? `<span class="suggestion-meta">${meta.join(" &middot; ")}</span>`
             : "";
@@ -145,8 +149,8 @@
                         class="suggestion-remove"
                         data-action="remove-history"
                         data-text="${escapeHtml(item.text)}"
-                        aria-label="Sterge din istoric"
-                        title="Sterge din istoric">
+                        aria-label="${escapeHtml(removeHistoryLabel)}"
+                        title="${escapeHtml(removeHistoryLabel)}">
                   ${REMOVE_ICON}
                 </button>
               </div>

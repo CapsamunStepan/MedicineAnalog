@@ -1,0 +1,41 @@
+<div class="header-controls">
+    <button type="button"
+            class="language-trigger"
+            data-language-trigger
+            data-dialog-id="language-dialog"
+            aria-haspopup="dialog"
+            aria-controls="language-dialog"
+            aria-expanded="false"
+            title="{{ ui.language_label }}">
+        <span class="language-trigger__label">{{ current_language_label }}</span>
+        <span class="language-trigger__chevron" aria-hidden="true">▾</span>
+    </button>
+    <button type="button"
+            class="theme-toggle"
+            title="{{ ui.theme_system }}"
+            aria-label="{{ ui.theme_toggle_label }}"
+            data-title-light="{{ ui.theme_light }}"
+            data-title-dark="{{ ui.theme_dark }}"
+            data-title-system="{{ ui.theme_system }}">
+    </button>
+</div>
+
+<dialog id="language-dialog" class="language-dialog" aria-label="{{ ui.language_label }}">
+    <div class="language-dialog__content">
+        <form method="post" action="{% url 'set_language' %}" class="language-dialog__form">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+            {% for option in language_options %}
+                <button type="submit"
+                        name="language"
+                        value="{{ option.code }}"
+                        class="language-dialog__option{% if option.code == current_language %} is-active{% endif %}">
+                    <span class="language-dialog__option-label">{{ option.label }}</span>
+                    {% if option.code == current_language %}
+                        <span class="language-dialog__check" aria-hidden="true">&#10003;</span>
+                    {% endif %}
+                </button>
+            {% endfor %}
+        </form>
+    </div>
+</dialog>

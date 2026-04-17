@@ -137,6 +137,30 @@ class SearchViewsTestCase(TestCase):
             SearchQuery.objects.filter(session_key=session_key, query_norm="paracetamol").exists()
         )
 
+    def test_language_switch_to_english_changes_home_ui(self):
+        response = self.client.post(
+            reverse("set_language"),
+            {"language": "en", "next": reverse("home")},
+            follow=True,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Search medicines and analogs")
+        self.assertContains(response, "Search")
+        self.assertEqual(self.client.session["language"], "en")
+
+    def test_language_switch_to_russian_changes_home_ui(self):
+        response = self.client.post(
+            reverse("set_language"),
+            {"language": "ru", "next": reverse("home")},
+            follow=True,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "\u041f\u043e\u0438\u0441\u043a \u043b\u0435\u043a\u0430\u0440\u0441\u0442\u0432 \u0438 \u0430\u043d\u0430\u043b\u043e\u0433\u043e\u0432")
+        self.assertContains(response, "\u041f\u043e\u0438\u0441\u043a")
+        self.assertEqual(self.client.session["language"], "ru")
+
     def test_medicine_detail_page_renders(self):
         response = self.client.get(reverse("medicine_detail", args=[self.primary_medicine.id]))
 
@@ -174,12 +198,12 @@ class SearchViewsTestCase(TestCase):
         self.assertEqual(first_page.context["page_obj"].paginator.per_page, 10)
         self.assertEqual(len(first_page.context["page_obj"].object_list), 10)
         self.assertContains(first_page, 'class="medicine-card"', count=10)
-        self.assertContains(first_page, "Inainte")
+        self.assertContains(first_page, "\u00cenainte")
 
         self.assertEqual(second_page.status_code, 200)
         self.assertEqual(second_page.context["page_obj"].number, 2)
         self.assertEqual(len(second_page.context["page_obj"].object_list), 3)
-        self.assertContains(second_page, "Inapoi")
+        self.assertContains(second_page, "\u00cenapoi")
 
     def test_home_search_shows_empty_state_when_nothing_found(self):
         response = self.client.get(reverse("home"), {"query": "zzznothingmatch"})

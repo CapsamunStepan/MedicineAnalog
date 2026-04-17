@@ -1,10 +1,13 @@
 from django.core.paginator import Paginator
 from django.db.models import Count, Min, Q
-from django.http import JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST
 
+from .i18n import LANGUAGE_COOKIE_NAME, get_language, get_ui_strings, normalize_language
 from .models import Medicine, SearchQuery
 
 
@@ -63,6 +66,7 @@ def home(request):
     query = request.GET.get("query", "")
     active_pharmacy = (request.GET.get("pharmacy") or "all").strip() or "all"
     page_number = request.GET.get("page") or "1"
+    ui = get_ui_strings(get_language(request))
 
     analogs = []
     landing = {}
@@ -72,9 +76,7 @@ def home(request):
 
     if query:
         medicines = (
-            Medicine.objects.filter(
-                Q(title__icontains=query) | Q(active_ingredient__icontains=query)
-            )
+            Medicine.objects.filter(Q(title__icontains=query) | Q(active_ingredient__icontains=query))
             .order_by("price", "id")
         )
         total_count = medicines.count()
@@ -105,7 +107,7 @@ def home(request):
             pharmacy_tabs = [
                 {
                     "id": "all",
-                    "label": "Toți",
+                    "label": ui["all_label"],
                     "count": total_count,
                     "is_active": active_pharmacy == "all",
                 }
@@ -197,7 +199,7 @@ def medicine_detail(request, medicine_id: int):
         )
 
     if len(cheap_analogs) < 5:
-        existing_ids = {medicine.id} | {a.id for a in cheap_analogs}
+        existing_ids = {medicine.id} | {analog.id for analog in cheap_analogs}
         first_word = medicine.title.split()[0] if medicine.title else ""
         if first_word and len(first_word) >= 3:
             name_matches = (
@@ -224,9 +226,9 @@ def analogs(request):
     results = []
 
     if ingredient:
-        qs = Medicine.objects.filter(active_ingredient__iexact=ingredient)
+        queryset = Medicine.objects.filter(active_ingredient__iexact=ingredient)
         results = list(
-            qs.values("title", "manufacturer", "img")
+            queryset.values("title", "manufacturer", "img")
             .annotate(min_price=Min("price"))
             .order_by("min_price")
         )
@@ -310,3 +312,21 @@ def clear_search_history(request):
         SearchQuery.objects.filter(session_key=session_key).delete()
 
     return JsonResponse({"suggestions": []})
+
+
+@require_POST
+def set_language(request):
+    language = normalize_language((request.POST.get("language") or "").strip())
+    next_url = (request.POST.get("next") or request.META.get("HTTP_REFERER") or "").strip()
+
+    if not next_url or not url_has_allowed_host_and_scheme(
+        next_url,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
+        next_url = reverse("home")
+
+    request.session["language"] = language
+    response = HttpResponseRedirect(next_url)
+    response.set_cookie(LANGUAGE_COOKIE_NAME, language, max_age=60 * 60 * 24 * 365, samesite="Lax")
+    return response
