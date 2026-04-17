@@ -72,9 +72,6 @@
     if (!input) return;
 
     const clearButton = form.querySelector(".search-clear");
-    const clearUrl = form.getAttribute("action") || window.location.pathname || "/";
-    const initialValue = input.defaultValue.trim();
-    const hasQueryInUrl = new URLSearchParams(window.location.search).has("query");
 
     let activeRequestController = null;
     let requestToken = 0;
@@ -236,12 +233,6 @@
 
     if (clearButton) {
       clearButton.addEventListener("click", () => {
-        const currentValue = input.value.trim();
-        if (hasQueryInUrl && initialValue && currentValue === initialValue) {
-          window.location.assign(clearUrl);
-          return;
-        }
-
         input.value = "";
         updateClearButton();
         abortActiveRequest();
