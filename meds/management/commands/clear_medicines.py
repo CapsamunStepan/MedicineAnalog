@@ -7,11 +7,11 @@ class Command(BaseCommand):
         parser.add_argument(
             '--pharmacy',
             type=str,
-            help='Имя аптеки',
+            help='Numele farmaciei',
             required=True
         )
 
     def handle(self, *args, **kwargs):
         pharmacy = kwargs['pharmacy']
         count, _ = Medicine.objects.filter(pharmacy=pharmacy).delete()
-        self.stdout.write(self.style.SUCCESS(f'Таблица очищена, удалено {count} записей'))
+        self.stdout.write(self.style.SUCCESS(f'Tabelul a fost curățat, au fost șterse {count} înregistrări'))

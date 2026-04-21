@@ -11,13 +11,13 @@ class Command(BaseCommand):
         parser.add_argument(
             '--path',
             type=str,
-            help='Путь к JSON файлу с данными',
+            help='Calea către fișierul JSON cu date',
             required=True
         )
         parser.add_argument(
             '--pharmacy',
             type=str,
-            help='Название аптеки',
+            help='Numele farmaciei',
             required=True
         )
         parser.add_argument(
@@ -28,7 +28,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--extract-active',
             action='store_true',
-            help='Заполнить active_ingredient при загрузке (OpenAI если настроен, иначе fallback)',
+            help='Completează active_ingredient la încărcare (OpenAI dacă este configurat, altfel fallback)',
         )
 
     def handle(self, *args, **kwargs):

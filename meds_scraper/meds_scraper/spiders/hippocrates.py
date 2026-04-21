@@ -22,7 +22,7 @@ class HippocratesSpider(scrapy.Spider):
         product_table = response.css("div.result-search__content.content-result-search")
         for product in product_table.css("div.content-result-search__item.item-product"):
             price = product.css("div.item-product__price span::text").get()
-            # если нет цены продукта нет в наличии, пропуск итерации
+            # dacă nu există preț, produsul nu este în stoc, se sare iterația
             if not price:
                 continue
             title = product.css("a[class='item-product__name']::text").get()
@@ -37,7 +37,7 @@ class HippocratesSpider(scrapy.Spider):
                 "img": img,
                 "manufacturer": manufacturer,
             }
-        next_page = response.xpath('//div[@class="pagging__arrow"]/a[span[text()="Далее"]]/@href').get()
+        next_page = response.xpath('//div[@class="pagging__arrow"]/a[span[text()="Înainte"]]/@href').get()
         if next_page:
             next_page = 'https://hippocrates.md' + next_page
             yield scrapy.Request(next_page, callback=self.parse)

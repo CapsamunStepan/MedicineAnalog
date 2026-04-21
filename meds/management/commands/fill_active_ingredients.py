@@ -12,18 +12,18 @@ class Command(BaseCommand):
             "--pharmacy",
             type=str,
             required=False,
-            help="Фильтр по аптеке (опционально)",
+            help="Filtru după farmacie (opțional)",
         )
         parser.add_argument(
             "--overwrite",
             action="store_true",
-            help="Перезаписать active_ingredient даже если уже заполнено",
+            help="Rescrie active_ingredient chiar dacă este deja completat",
         )
         parser.add_argument(
             "--limit",
             type=int,
             default=0,
-            help="Ограничить количество обновлений (0 = без лимита)",
+            help="Limitează numărul de actualizări (0 = fără limită)",
         )
 
     def handle(self, *args, **kwargs):

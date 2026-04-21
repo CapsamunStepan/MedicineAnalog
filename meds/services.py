@@ -4,12 +4,14 @@ from typing import Optional
 
 
 _DOSAGE_RE = re.compile(
-    r"(?i)\b(\d+([.,]\d+)?\s?(mg|мг|g|г|mcg|мкг|мкг/доза|iu|ме|мл|ml))\b"
+    r"(?i)\b(\d+([.,]\d+)?\s?(mg|g|mcg|\u00b5g|ui|iu|ml|l))\b"
 )
 _FORM_WORDS_RE = re.compile(
-    r"(?i)\b(таблетк\w*|капсул\w*|сироп\w*|порош\w*|раствор\w*|спрей\w*|маз\w*|крем\w*|гель\w*|ампул\w*|саше|капли|суспенз\w*)\b"
+    r"(?i)\b(comprimat\w*|capsul\w*|sirop\w*|pulber\w*|solu[tț]i\w*|"
+    r"spray\w*|unguent\w*|crem\w*|gel\w*|fiol\w*|plic|pic[ăa]tur\w*|"
+    r"suspens\w*|supozit\w*|ovul\w*|emulsi\w*|past\w*|drajeu\w*)\b"
 )
-_PACK_RE = re.compile(r"(?i)\b(n\d+|№\s?\d+|\d+\s?шт\.?)\b")
+_PACK_RE = re.compile(r"(?i)\b(n\d+|nr\.?\s?\d+|\d+\s?buc\.?|\d+\s?x|x\s?\d+)\b")
 
 
 def _fallback_extract_active_ingredient(title: str) -> str:
@@ -57,9 +59,9 @@ def extract_active_ingredient(title: str) -> str:
                 {
                     "role": "system",
                     "content": (
-                        "Ты фармацевтический помощник. "
-                        "Извлекай активное вещество из названия препарата. "
-                        "Отвечай только активным веществом, без пояснений."
+                        "Ești un asistent farmaceutic. "
+                        "Extrage substanța activă din denumirea medicamentului. "
+                        "Răspunde doar cu substanța activă, fără explicații."
                     ),
                 },
                 {"role": "user", "content": title},

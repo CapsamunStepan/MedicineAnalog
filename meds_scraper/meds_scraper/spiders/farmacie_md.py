@@ -39,10 +39,10 @@ class MedsSpider(scrapy.Spider):
                 return
 
             """
-            -товар без цены означает, что его нет в наличии
-            -товары отсортированы так, что сначала идут товары в наличии, а затем которых нет в наличии
-            -если начались товары, которых нет в наличии, то можно прервать парсинг
-            -это сэкономит время, и поможет избежать лишней работы
+            - un produs fără preț înseamnă că nu este în stoc
+            - produsele sunt sortate astfel încât mai întâi apar cele în stoc, apoi cele fără stoc
+            - dacă încep produsele fără stoc, putem întrerupe parsarea
+            - acest lucru economisește timp și evită munca inutilă
             """
 
             yield {

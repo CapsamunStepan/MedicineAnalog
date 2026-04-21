@@ -13,12 +13,12 @@ class Command(BaseCommand):
         parser.add_argument(
             "--skip-scrapy",
             action="store_true",
-            help="Не запускать Scrapy, только загрузить JSON в БД",
+            help="Nu porni Scrapy, doar încarcă JSON în BD",
         )
         parser.add_argument(
             "--extract-active",
             action="store_true",
-            help="Заполнить active_ingredient при загрузке/обновлении",
+            help="Completează active_ingredient la încărcare/actualizare",
         )
 
     def handle(self, *args, **kwargs):
